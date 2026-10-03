@@ -1,23 +1,24 @@
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
+import Work from "@/components/Work";
+import Project from "@/components/Project";
 import Stack from "@/components/Stack";
 import Experience from "@/components/Experience";
-import Project from "@/components/Project";
 import Education from "@/components/Education";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import ScrollEffects from "@/components/ScrollEffects";
 
 export default function Home() {
   return (
     <>
-      <ScrollEffects />
+      <span id="top" aria-hidden="true" />
       <Nav />
-      <main id="top">
+      <main id="main" tabIndex={-1} className="outline-none">
         <Hero />
+        <Work />
+        <Project />
         <Stack />
         <Experience />
-        <Project />
         <Education />
         <Contact />
       </main>

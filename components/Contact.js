@@ -1,53 +1,48 @@
-import { Github, Linkedin, Mail, Phone } from "lucide-react";
-import { GITHUB_URL, LINKEDIN_URL } from "./Nav";
+import { EnvelopeSimple } from "@phosphor-icons/react/ssr";
+import SplitWords from "@/components/motion/SplitWords";
+import Reveal from "@/components/motion/Reveal";
+import Magnetic from "@/components/motion/Magnetic";
+import CopyEmail from "@/components/contact/CopyEmail";
+import ContactCard from "@/components/contact/ContactCard";
+import { CONTACT_LABEL, EMAIL } from "@/lib/site";
 
 export default function Contact() {
   return (
-    <section className="relative overflow-hidden bg-ink py-24 pb-[88px]">
-      <div className="grid-bg grid-bg-dark" />
-      <div className="relative z-10 mx-auto max-w-wrap px-7">
-        <div className="max-w-[640px]">
-          <p className="eyebrow eyebrow-amber">$ contact --send</p>
-          <h2 className="mb-4 font-display text-[clamp(28px,4vw,42px)] font-semibold tracking-tight text-white">
-            Let&apos;s build something.
-          </h2>
-          <p className="mb-8 max-w-[52ch] text-base text-[#B9C6DA]">
-            Open to internship extensions, freelance MERN/mobile builds, and
-            early AI-assisted product work. Based in Karachi — happy to work
-            remote.
-          </p>
-          <div className="flex flex-wrap gap-3.5">
-            <a
-              href="mailto:23FA-011-CS@students.uitu.edu.pk"
-              className="btn btn-amber"
-            >
-              <Mail size={15} />
-              23FA-011-CS@students.uitu.edu.pk
-            </a>
-            <a href="tel:03322403737" className="btn btn-on-dark">
-              <Phone size={15} />
-              0332-2403737
-            </a>
-            <a
-              href={GITHUB_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-on-dark"
-            >
-              <Github size={15} />
-              GitHub
-            </a>
-            <a
-              href={LINKEDIN_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-on-dark"
-            >
-              <Linkedin size={15} />
-              LinkedIn
-            </a>
-          </div>
+    <section id="contact" aria-labelledby="contact-title" className="relative isolate overflow-hidden py-24 sm:py-32">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-[18%] -z-10 h-[64%] w-[100%] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(closest-side,rgb(var(--accent)/0.12),transparent)] blur-2xl"
+      />
+      <div className="wrap grid items-center gap-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <div>
+          <SplitWords
+            as="h2"
+            id="contact-title"
+            className="text-[clamp(2.8rem,7vw,6rem)] font-semibold leading-[0.98] tracking-[-0.05em]"
+            lines={[{ text: "Let's build" }, { text: "something.", className: "text-muted" }]}
+          />
+          <Reveal delay={0.2}>
+            <p className="mt-7 max-w-[46ch] text-lg leading-relaxed text-muted">
+              Open to freelance MERN and mobile builds, and early AI product work.
+              Based in Karachi, happy to work remote.
+            </p>
+          </Reveal>
+          <Reveal delay={0.3}>
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <Magnetic>
+                <a href={`mailto:${EMAIL}`} className="btn btn-primary h-12 px-6 text-base">
+                  <EnvelopeSimple size={18} aria-hidden="true" />
+                  {CONTACT_LABEL}
+                </a>
+              </Magnetic>
+              <CopyEmail email={EMAIL} className="btn btn-ghost h-12 px-6 text-base" />
+            </div>
+          </Reveal>
         </div>
+
+        <Reveal delay={0.15} y={50}>
+          <ContactCard />
+        </Reveal>
       </div>
     </section>
   );
