@@ -3,52 +3,28 @@
 @tailwind utilities;
 
 /*
-  Theme tokens. Cool neutrals plus one accent (the original brand blue, slightly
-  desaturated). Light and dark follow the OS setting.
-  Shape rule: buttons and chips are full pills, cards are 20px, media inside
-  cards is 12px.
+  One theme: a cold frost world. Ink on fog, one blue accent.
+  Shape rule: buttons and chips are pills, panels are 20px, media inside is 12px.
 */
 :root {
   color-scheme: light;
-  --bg: 244 245 247;
-  --surface: 252 252 253;
-  --surface-2: 233 235 240;
-  --ink: 14 17 22;
-  --muted: 88 95 109;
+  --bg: 195 202 211;
+  --surface: 233 237 242;
+  --surface-2: 220 226 233;
+  --ink: 16 21 28;
+  --muted: 63 72 85;
   --accent: 38 95 217;
   --accent-ink: 250 251 252;
   --live: 24 138 90;
   --shadow: 26 36 64;
-  --shadow-alpha: 0.16;
-  --grain-opacity: 0.035;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --bg: 10 11 13;
-    --surface: 17 19 23;
-    --surface-2: 25 28 33;
-    --ink: 236 237 239;
-    --muted: 145 151 162;
-    --accent: 104 145 235;
-    --accent-ink: 8 10 14;
-    --live: 74 200 140;
-    --shadow: 0 0 0;
-    --shadow-alpha: 0.5;
-    --grain-opacity: 0.05;
-  }
+  --shadow-alpha: 0.18;
+  --grain-opacity: 0.05;
+  --gx: clamp(20px, 4vw, 56px);
 }
 
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-padding-top: 88px;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    html:not(.lenis) {
-      scroll-behavior: smooth;
-    }
   }
   body {
     background: rgb(var(--bg));
@@ -65,17 +41,12 @@
     outline: 2px solid rgb(var(--accent));
     outline-offset: 3px;
   }
-  h1,
-  h2,
-  h3 {
-    text-wrap: balance;
-  }
   p,
   li {
     text-wrap: pretty;
   }
 
-  /* Film grain: fixed, pointer-events none, never on a scrolling layer. */
+  /* Film grain over everything, fixed so it never repaints on scroll. */
   body::after {
     content: "";
     position: fixed;
@@ -88,38 +59,41 @@
 }
 
 @layer components {
-  .wrap {
-    @apply mx-auto w-full max-w-wrap px-5 sm:px-8;
+  /* HUD type: small mono readouts over the 3D world */
+  .hud {
+    @apply font-mono text-[12px] uppercase leading-[1.45] tracking-[0.08em] text-ink;
+  }
+  .hud-copy {
+    @apply font-mono text-[13px] normal-case leading-[1.55] tracking-[0.01em] text-ink;
+  }
+  .hud-muted {
+    @apply text-ink/60;
+  }
+  .gx-l {
+    left: var(--gx);
+  }
+  .gx-r {
+    right: var(--gx);
   }
 
   .btn {
     @apply inline-flex h-11 select-none items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 text-[15px] font-medium transition-[background-color,color,box-shadow,transform] duration-300 ease-out-expo active:scale-[0.97];
   }
   .btn-primary {
-    @apply bg-accent text-accent-ink hover:bg-accent/90;
-    box-shadow: 0 10px 30px -12px rgb(var(--accent) / 0.55);
+    @apply bg-ink text-bg hover:bg-ink/85;
   }
   .btn-ghost {
-    @apply text-ink ring-1 ring-inset ring-ink/15 hover:bg-ink/[0.06] hover:ring-ink/25;
+    @apply text-ink ring-1 ring-inset ring-ink/25 hover:bg-ink/[0.06];
   }
   .btn-sm {
     @apply h-9 px-4 text-sm;
   }
 
   .chip {
-    @apply inline-flex items-center rounded-full bg-ink/[0.05] px-3 py-1 font-mono text-[12px] text-ink/80 ring-1 ring-inset ring-ink/10;
+    @apply inline-flex items-center rounded-full bg-ink/[0.06] px-3 py-1 font-mono text-[12px] text-ink/80 ring-1 ring-inset ring-ink/10;
   }
 
-  .card {
-    @apply rounded-[20px] bg-surface ring-1 ring-inset ring-ink/[0.08];
-    box-shadow: 0 30px 80px -40px rgb(var(--shadow) / var(--shadow-alpha));
-  }
-
-  .link-u {
-    @apply underline decoration-ink/25 decoration-1 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent;
-  }
-
-  /* "+" bullets: kept from the original build-log identity. */
+  /* "+" bullets, kept from the original build-log identity */
   .plus-list > li {
     @apply relative pl-6;
   }
@@ -128,69 +102,26 @@
     @apply absolute left-0 top-0 font-mono font-semibold text-accent;
   }
 
-  /* Spotlight border that follows the pointer (driven by --mx / --my). */
-  .spotlight {
-    position: relative;
-    isolation: isolate;
+  .bracket {
+    @apply relative px-5 py-2;
   }
-  .spotlight::before {
+  .bracket::before,
+  .bracket::after {
     content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: radial-gradient(
-      320px circle at var(--mx, -999px) var(--my, -999px),
-      rgb(var(--accent) / 0.7),
-      transparent 60%
-    );
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s;
+    @apply pointer-events-none absolute inset-y-0 w-2.5 border-y border-ink/70;
   }
-  .spotlight::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    background: radial-gradient(
-      420px circle at var(--mx, -999px) var(--my, -999px),
-      rgb(var(--accent) / 0.08),
-      transparent 65%
-    );
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s;
+  .bracket::before {
+    @apply left-0 border-l;
   }
-  .spotlight:hover::before,
-  .spotlight:hover::after {
-    opacity: 1;
-  }
-
-  .phone-frame {
-    @apply overflow-hidden rounded-[22px] bg-[#0b0c0f] p-[5px] ring-1 ring-black/40;
-    box-shadow: 0 30px 60px -24px rgb(var(--shadow) / calc(var(--shadow-alpha) + 0.2));
+  .bracket::after {
+    @apply right-0 border-r;
   }
 }
 
-@layer utilities {
-  .preserve-3d {
-    transform-style: preserve-3d;
-  }
-  .backface-hidden {
-    backface-visibility: hidden;
-  }
-  .mask-fade-x {
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  }
-  .tabular {
-    font-variant-numeric: tabular-nums;
-  }
+dialog.project-dialog::backdrop {
+  background: rgb(var(--bg) / 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 @media (prefers-reduced-motion: reduce) {

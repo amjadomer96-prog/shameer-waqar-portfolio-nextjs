@@ -1,28 +1,31 @@
-import Nav from "@/components/Nav";
-import Hero from "@/components/Hero";
-import Work from "@/components/Work";
-import Project from "@/components/Project";
-import Stack from "@/components/Stack";
-import Experience from "@/components/Experience";
-import Education from "@/components/Education";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+import { PROJECTS } from "@/lib/projects";
+import Experience from "@/components/hud/Experience";
+import HudFrame from "@/components/hud/HudFrame";
+import ProjectDialog from "@/components/hud/ProjectDialog";
+import {
+  AboutSection,
+  ContactSection,
+  HeroSection,
+  LogSection,
+  ProjectSection,
+} from "@/components/hud/Sections";
 
 export default function Home() {
   return (
-    <>
-      <span id="top" aria-hidden="true" />
-      <Nav />
-      <main id="main" tabIndex={-1} className="outline-none">
-        <Hero />
-        <Work />
-        <Project />
-        <Stack />
-        <Experience />
-        <Education />
-        <Contact />
+    <Experience>
+      <HudFrame />
+      <main id="main">
+        <HeroSection />
+        <AboutSection />
+        <div id="work">
+          {PROJECTS.map((p, i) => (
+            <ProjectSection key={p.slug} project={p} index={i} />
+          ))}
+        </div>
+        <LogSection />
+        <ContactSection />
       </main>
-      <Footer />
-    </>
+      <ProjectDialog />
+    </Experience>
   );
 }

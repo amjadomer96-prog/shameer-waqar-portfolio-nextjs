@@ -12,8 +12,7 @@ export default function SmoothScroll() {
 
     const lenis = new Lenis({
       autoRaf: true,
-      lerp: 0.11,
-      anchors: { offset: -80 },
+      lerp: 0.09,
     });
     window.__lenis = lenis;
 

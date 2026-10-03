@@ -1,45 +1,52 @@
-# Shameer Waqar — Portfolio (Next.js)
+# Shameer Waqar — Portfolio
 
-A one-page portfolio built with **Next.js 16 (App Router)**, **Tailwind CSS 3**,
-**Motion** and a small **React Three Fiber** scene. Light and dark mode follow
-the visitor's OS setting.
+A scroll-driven 3D portfolio built with **Next.js 16**, **React Three Fiber**
+(three.js), **Motion** and **Tailwind CSS 3**. Scrolling flies a camera through
+a frozen world; the text on top is a normal HTML page, so it stays readable,
+selectable by screen readers and indexable.
 
-## What's on the page
+## The journey
 
-| Section | What it does |
-|---|---|
-| Hero | 3D stack of real project screens (WebGL). Panels fly in, follow the pointer, lift on hover, fan apart on scroll, and jump to their case study on click. |
-| Recent work | Sticky card stack. Each card plays a muted walkthrough of the live site, with a phone view floating in 3D. |
-| SafaLife | Draggable 3D carousel of the app's store screens (keyboard and buttons too). |
-| Stack | Bento grid with pointer tilt and spotlight borders, plus a tool-logo marquee. |
-| Experience | Timeline that draws itself as you scroll. |
-| Education | Staggered list. |
-| Contact | 3D business card that tilts and flips to show contact details. |
-| Footer | Outlined name that fills in as you scroll. |
+| Section | In the 3D world | On the page (HUD) |
+|---|---|---|
+| `#top` | "SW" built from glowing voxels, frozen in an ice block on a snowfield | Role, location, about |
+| `#about` | Camera orbits the monolith | Status readout |
+| `#ifund` … `#safalife` | Each project is a phone with its real app screen, frozen in its own ice block | Code, name, stack, date, *Click to explore* |
+| `#log` | Camera passes through an ice ring into a field of drifting nodes | Experience, education, stack |
+| `#contact` | "SW" assembles from ~7,000 particles above a ring pedestal | Email, phone, channel carousel |
 
-Everything respects `prefers-reduced-motion`: the WebGL scene is replaced by a
-static CSS 3D stack, videos don't autoplay, and transform animations are skipped.
+Clicking a block (or *Click to explore*) opens a panel with the walkthrough
+video, details and links.
+
+Everything in the scene is procedural: no 3D models, no HDR files, no font
+files. Ice is `MeshPhysicalMaterial` with transmission, iridescence and a
+generated frost texture; the terrain, ice shapes and point clouds come from
+noise and rasterised text.
 
 ## Where things live
 
-- `lib/projects.js` — **edit this to add or change projects** (copy, stack,
-  links, media). The hero 3D panels read from it too.
-- `lib/site.js` — email, phone, GitHub and LinkedIn links.
-- `components/` — one file per section; interactive pieces sit in subfolders
-  (`hero/`, `work/`, `safalife/`, `contact/`, `experience/`, `footer/`).
-- `components/motion/` — shared animation helpers (reveal, split headline,
-  magnetic button, tilt, smooth scroll, reduced-motion hook).
-- `app/globals.css` — color tokens for light and dark mode, buttons, cards.
-- `public/work/` — screenshots, phone views, posters and MP4 walkthroughs,
-  captured from the live sites.
+- `lib/projects.js` — **projects**: copy, stack, links, video, and the
+  `frozen` screen image shown inside each ice block.
+- `lib/profile.js` — experience, education and stack for the log.
+- `lib/site.js` — email, phone and social links.
+- `components/world/` — the three.js scene. `scene/Director.js` maps scroll
+  position to camera keyframes, anchored to the page sections.
+- `components/hud/` — the HTML overlay: sections, scramble text, loader,
+  sound toggle (synthesised wind) and the project panel.
 
 ## Adding a project
 
-1. Put a desktop screenshot (`home.jpg`), a phone screenshot (`m-home.jpg`),
-   a short muted MP4 (`walkthrough.mp4`) and its first frame (`poster.jpg`)
-   in `public/work/<slug>/`.
-2. Add an entry to `PROJECTS` in `lib/projects.js`.
-3. Optionally add it to `HERO_PANELS` to show it in the 3D hero.
+1. Add a phone screenshot (`m-home.jpg`, about 600×1300), a short muted
+   `walkthrough.mp4` and its first frame `poster.jpg` to `public/work/<slug>/`.
+2. Add an entry to `PROJECTS` in `lib/projects.js` with a `code` like
+   `PROJECT_05`. A new ice block and HUD section appear automatically.
+
+## Accessibility and performance
+
+- Reduced motion or no WebGL2: the 3D world is skipped and a static frost
+  backdrop with the project screens is shown instead.
+- three.js loads after first paint; rendering pauses when the tab is hidden;
+  objects far from the camera are not drawn.
 
 ## Run it locally
 
@@ -48,10 +55,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
-
 ## Deploy
 
 The repo is linked to Vercel; pushing to `main` redeploys
-`shameer-waqar-portfolio-nextjs.vercel.app`. For a fresh project, import the
-repo at [vercel.com/new](https://vercel.com/new) with default settings.
+`shameer-waqar-portfolio-nextjs.vercel.app`.

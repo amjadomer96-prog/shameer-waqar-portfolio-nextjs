@@ -44,10 +44,7 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F4F5F7" },
-    { media: "(prefers-color-scheme: dark)", color: "#0A0B0D" },
-  ],
+  themeColor: "#C3CAD3",
 };
 
 export default function RootLayout({ children }) {
@@ -56,7 +53,7 @@ export default function RootLayout({ children }) {
       <body>
         <a
           href="#main"
-          className="btn btn-primary fixed left-4 top-3 z-skip -translate-y-20 focus:translate-y-0"
+          className="btn btn-primary fixed left-4 top-3 z-skip -translate-y-24 focus:translate-y-0"
         >
           Skip to content
         </a>
