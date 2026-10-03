@@ -9,7 +9,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // Theme tokens live in app/globals.css and switch with prefers-color-scheme.
+      // Tokens live in app/globals.css. --accent is overridden per project section.
       colors: {
         bg: token("bg"),
         surface: token("surface"),
@@ -17,8 +17,6 @@ module.exports = {
         ink: token("ink"),
         muted: token("muted"),
         accent: token("accent"),
-        "accent-ink": token("accent-ink"),
-        live: token("live"),
       },
       fontFamily: {
         sans: ["var(--font-geist)", "system-ui", "sans-serif"],
@@ -27,23 +25,17 @@ module.exports = {
       maxWidth: {
         wrap: "1240px",
       },
-      // Z-index scale: nav < grain < skip link. Nothing else gets a z-index above 10.
+      // Z-index scale: rail < nav < grain < skip link.
       zIndex: {
+        rail: "30",
         nav: "40",
         grain: "50",
         skip: "60",
       },
       transitionTimingFunction: {
-        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
-      },
-      keyframes: {
-        marquee: {
-          from: { transform: "translate3d(0,0,0)" },
-          to: { transform: "translate3d(-50%,0,0)" },
-        },
-      },
-      animation: {
-        marquee: "marquee 38s linear infinite",
+        // soft landing for reveals, snappy for controls
+        land: "cubic-bezier(0.16, 1, 0.3, 1)",
+        snap: "cubic-bezier(0.2, 0, 0, 1)",
       },
     },
   },

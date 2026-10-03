@@ -44,13 +44,17 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#C3CAD3",
+  themeColor: "#0A0B0D",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <body>
+        {/* without JavaScript nothing animates in, so show everything */}
+        <noscript>
+          <style>{"[data-reveal]{opacity:1!important;transform:none!important;filter:none!important}.iris-clip{clip-path:none!important}.iris-scrim{display:none!important}"}</style>
+        </noscript>
         <a
           href="#main"
           className="btn btn-primary fixed left-4 top-3 z-skip -translate-y-24 focus:translate-y-0"

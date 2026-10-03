@@ -3,28 +3,25 @@
 @tailwind utilities;
 
 /*
-  One theme: a cold frost world. Ink on fog, one blue accent.
-  Shape rule: buttons and chips are pills, panels are 20px, media inside is 12px.
+  One dark theme. Neutral surfaces, warm off-white ink, and a single accent
+  that each project section overrides with its own colour (--accent).
+  Shape rule: controls are 10px, media frames 14px, chips are pills.
 */
 :root {
-  color-scheme: light;
-  --bg: 195 202 211;
-  --surface: 233 237 242;
-  --surface-2: 220 226 233;
-  --ink: 16 21 28;
-  --muted: 63 72 85;
-  --accent: 38 95 217;
-  --accent-ink: 250 251 252;
-  --live: 24 138 90;
-  --shadow: 26 36 64;
-  --shadow-alpha: 0.18;
-  --grain-opacity: 0.05;
-  --gx: clamp(20px, 4vw, 56px);
+  color-scheme: dark;
+  --bg: 10 11 13;
+  --surface: 17 19 23;
+  --surface-2: 25 28 33;
+  --ink: 237 236 232;
+  --muted: 146 151 160;
+  --accent: 126 162 255;
+  --gx: clamp(20px, 5vw, 72px);
 }
 
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 72px;
   }
   body {
     background: rgb(var(--bg));
@@ -35,62 +32,62 @@
     overflow-x: clip;
   }
   ::selection {
-    background: rgb(var(--accent) / 0.28);
+    background: rgb(var(--accent) / 0.35);
   }
   :focus-visible {
     outline: 2px solid rgb(var(--accent));
     outline-offset: 3px;
+    border-radius: 4px;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
   }
   p,
   li {
     text-wrap: pretty;
   }
-
-  /* Film grain over everything, fixed so it never repaints on scroll. */
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    pointer-events: none;
-    opacity: var(--grain-opacity);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
 }
 
 @layer components {
-  /* HUD type: small mono readouts over the 3D world */
-  .hud {
-    @apply font-mono text-[12px] uppercase leading-[1.45] tracking-[0.08em] text-ink;
+  .wrap {
+    @apply mx-auto w-full max-w-wrap;
+    padding-left: var(--gx);
+    padding-right: var(--gx);
   }
-  .hud-copy {
-    @apply font-mono text-[13px] normal-case leading-[1.55] tracking-[0.01em] text-ink;
-  }
-  .hud-muted {
-    @apply text-ink/60;
-  }
-  .gx-l {
-    left: var(--gx);
-  }
-  .gx-r {
-    right: var(--gx);
+
+  /* small mono label used for section and project metadata */
+  .label {
+    @apply font-mono text-[12px] uppercase leading-none tracking-[0.14em] text-muted;
   }
 
   .btn {
-    @apply inline-flex h-11 select-none items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 text-[15px] font-medium transition-[background-color,color,box-shadow,transform] duration-300 ease-out-expo active:scale-[0.97];
+    @apply inline-flex h-11 select-none items-center justify-center gap-2 whitespace-nowrap rounded-[10px] px-5 text-[15px] font-medium transition-[background-color,color,border-color,transform] duration-150 ease-snap active:scale-[0.97];
   }
   .btn-primary {
     @apply bg-ink text-bg hover:bg-ink/85;
   }
   .btn-ghost {
-    @apply text-ink ring-1 ring-inset ring-ink/25 hover:bg-ink/[0.06];
+    @apply border border-ink/15 text-ink hover:border-ink/35 hover:bg-ink/[0.05];
+  }
+  .btn-accent {
+    @apply border border-accent/40 bg-accent/10 text-ink hover:bg-accent/20;
   }
   .btn-sm {
-    @apply h-9 px-4 text-sm;
+    @apply h-9 px-3.5 text-sm;
   }
 
   .chip {
-    @apply inline-flex items-center rounded-full bg-ink/[0.06] px-3 py-1 font-mono text-[12px] text-ink/80 ring-1 ring-inset ring-ink/10;
+    @apply inline-flex items-center rounded-full border border-ink/10 bg-ink/[0.04] px-3 py-1 font-mono text-[12px] text-ink/75;
+  }
+
+  .kbd {
+    @apply inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-[6px] border border-ink/15 bg-ink/[0.06] px-1.5 font-mono text-[11px] text-ink/70;
+  }
+
+  .rule {
+    @apply border-t border-ink/10;
   }
 
   /* "+" bullets, kept from the original build-log identity */
@@ -102,30 +99,22 @@
     @apply absolute left-0 top-0 font-mono font-semibold text-accent;
   }
 
-  .bracket {
-    @apply relative px-5 py-2;
+  /* browser chrome around site captures */
+  .browser {
+    @apply overflow-hidden rounded-[14px] border border-ink/10 bg-surface;
+    box-shadow: 0 50px 120px -50px rgb(0 0 0 / 0.9);
   }
-  .bracket::before,
-  .bracket::after {
-    content: "";
-    @apply pointer-events-none absolute inset-y-0 w-2.5 border-y border-ink/70;
-  }
-  .bracket::before {
-    @apply left-0 border-l;
-  }
-  .bracket::after {
-    @apply right-0 border-r;
+  .browser-bar {
+    @apply flex h-9 items-center gap-3 border-b border-ink/10 bg-surface-2 px-3.5;
   }
 }
 
-dialog.project-dialog::backdrop {
-  background: rgb(var(--bg) / 0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+dialog.palette::backdrop {
+  background: rgb(5 6 8 / 0.72);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
-    animation: none;
+  html {
+    scroll-behavior: auto;
   }
 }
