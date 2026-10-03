@@ -3,12 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "@phosphor-icons/react";
 import { useReduced } from "@/components/motion/useReduced";
+import { useNear } from "@/components/motion/useNear";
 
 // Muted walkthrough that plays only while on screen. Always has a pause control.
 export default function AutoVideo({ src, poster, label, className }) {
   const ref = useRef(null);
   const userPaused = useRef(false);
   const reduce = useReduced();
+  const near = useNear(ref);
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
@@ -46,7 +48,7 @@ export default function AutoVideo({ src, poster, label, className }) {
       <video
         ref={ref}
         className="block aspect-[16/10] w-full bg-black object-cover"
-        poster={poster}
+        poster={near ? poster : undefined}
         muted
         loop
         playsInline
@@ -61,9 +63,9 @@ export default function AutoVideo({ src, poster, label, className }) {
         type="button"
         onClick={toggle}
         aria-label={playing ? `Pause ${label}` : `Play ${label}`}
-        className="absolute bottom-3 left-3 grid h-9 w-9 place-items-center rounded-full bg-black/55 text-white ring-1 ring-white/20 backdrop-blur-md transition-transform hover:scale-105 active:scale-95"
+        className="absolute bottom-3 left-3 grid h-11 w-11 place-items-center rounded-full bg-black/60 text-white ring-1 ring-white/25 transition-transform duration-150 ease-snap hover:scale-105 active:scale-95"
       >
-        {playing ? <Pause size={15} weight="fill" /> : <Play size={15} weight="fill" />}
+        {playing ? <Pause size={16} weight="fill" aria-hidden="true" /> : <Play size={16} weight="fill" aria-hidden="true" />}
       </button>
     </div>
   );

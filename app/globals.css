@@ -48,6 +48,16 @@
   li {
     text-wrap: pretty;
   }
+  /* no double-tap zoom delay on controls */
+  a,
+  button {
+    touch-action: manipulation;
+  }
+  /* sections receive focus after a jump so keyboard and screen-reader users
+     continue from there; they are not controls, so no ring */
+  [data-jump]:focus {
+    outline: none;
+  }
 }
 
 @layer components {
@@ -74,8 +84,9 @@
   .btn-accent {
     @apply border border-accent/40 bg-accent/10 text-ink hover:bg-accent/20;
   }
+  /* 44px on touch layouts, compact from md up where a mouse is likely */
   .btn-sm {
-    @apply h-9 px-3.5 text-sm;
+    @apply h-11 px-4 text-sm md:h-9 md:px-3.5;
   }
 
   .chip {
@@ -83,7 +94,7 @@
   }
 
   .kbd {
-    @apply inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-[6px] border border-ink/15 bg-ink/[0.06] px-1.5 font-mono text-[11px] text-ink/70;
+    @apply inline-flex h-[22px] min-w-[22px] items-center justify-center rounded-[6px] border border-ink/15 bg-ink/[0.06] px-1.5 font-mono text-[12px] text-ink/70;
   }
 
   .rule {
@@ -111,6 +122,27 @@
 
 dialog.palette::backdrop {
   background: rgb(5 6 8 / 0.72);
+}
+
+/* the palette arrives quickly instead of snapping in */
+@keyframes palette-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  dialog.palette[open] {
+    animation: palette-in 160ms cubic-bezier(0.2, 0, 0, 1);
+  }
+  dialog.palette[open]::backdrop {
+    animation: backdrop-in 160ms linear;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

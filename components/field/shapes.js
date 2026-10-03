@@ -167,7 +167,32 @@ function crescent(n, r) {
   return rotate(out, 0, -0.3);
 }
 
-// Skills and path: a calm rolling surface.
+// Skills: a sphere with two orbits. The DOM skill labels turn around it.
+function globe(n, r) {
+  const out = new Float32Array(n * 3);
+  const shell = Math.floor(n * 0.66);
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < n; i++) {
+    if (i < shell) {
+      const y = 1 - (i / (shell - 1)) * 2;
+      const rad = Math.sqrt(1 - y * y);
+      const th = golden * i;
+      out.set([Math.cos(th) * rad, y, Math.sin(th) * rad], i * 3);
+    } else {
+      // two tilted orbits just outside the labels
+      const ring = i % 2;
+      const a = r() * Math.PI * 2;
+      const rr = 1.4 + (r() - 0.5) * 0.03;
+      const x = Math.cos(a) * rr;
+      const z = Math.sin(a) * rr;
+      const tilt = ring ? 0.5 : -0.38;
+      out.set([x * Math.cos(tilt), x * Math.sin(tilt) + (r() - 0.5) * 0.02, z], i * 3);
+    }
+  }
+  return out;
+}
+
+// About and path: a calm rolling surface.
 function wave(n, r) {
   const out = new Float32Array(n * 3);
   const cols = Math.ceil(Math.sqrt(n * 1.7));
@@ -225,6 +250,7 @@ export function buildShapes(n) {
     shelf: shelf(n, rng(37)),
     orb: orb(n, rng(41)),
     crescent: crescent(n, rng(53)),
+    globe: globe(n, rng(59)),
     wave: wave(n, rng(67)),
     monogram: monogram(n, rng(79)),
   };

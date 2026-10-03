@@ -11,16 +11,18 @@ import {
 } from "motion/react";
 import { fieldProps } from "@/lib/field";
 import { useReduced } from "@/components/motion/useReduced";
+import { useNear } from "@/components/motion/useNear";
 import { ProjectDetails, ProjectHeader } from "./ProjectParts";
 
 /*
-  iFund: a pinned phone. Scrolling steps through the real app screens, one
-  flow step per screen, while the phone slowly turns. The screens are plain
-  images in the DOM, so they stay pixel-sharp.
+  iFund: a pinned phone. Scrolling steps through real captures of the app,
+  one flow step per screen, while the phone slowly turns. The screens are
+  plain images in the DOM, so they stay pixel-sharp.
 */
 export default function PhoneScrub({ project }) {
   const ref = useRef(null);
   const reduce = useReduced();
+  const near = useNear(ref);
   const screens = project.screens;
   const n = screens.length;
   const [index, setIndex] = useState(0);
@@ -52,7 +54,7 @@ export default function PhoneScrub({ project }) {
       className="relative"
       {...fieldProps({ shape: project.shape, accent: project.accent, anchor: "far-right", alpha: 0.55 })}
     >
-      <div ref={ref} style={{ height: `${n * 62 + 100}vh` }}>
+      <div ref={ref} style={{ height: `${n * 50 + 100}vh` }}>
         <div className="sticky top-0 h-[100dvh] overflow-hidden">
           <div className="wrap grid h-full grid-rows-[auto_minmax(0,1fr)_auto] gap-4 pb-6 pt-20 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:grid-rows-1 lg:items-center lg:gap-12 lg:pb-0 lg:pt-14">
             {/* left: what you're looking at */}
@@ -62,7 +64,7 @@ export default function PhoneScrub({ project }) {
                 {project.summary}
               </p>
 
-              <ol className="relative mt-9 hidden lg:block">
+              <ol className="relative mt-7 hidden lg:block">
                 <span aria-hidden="true" className="absolute bottom-0 left-0 top-0 w-px bg-ink/10" />
                 <motion.span
                   aria-hidden="true"
@@ -73,8 +75,8 @@ export default function PhoneScrub({ project }) {
                   <li
                     key={s.src}
                     aria-current={i === index ? "step" : undefined}
-                    className={`py-[7px] pl-5 text-[15px] transition-colors duration-200 ease-snap ${
-                      i === index ? "font-medium text-ink" : "text-muted/70"
+                    className={`py-[5px] pl-5 text-[15px] transition-colors duration-200 ease-snap ${
+                      i === index ? "font-medium text-ink" : "text-muted"
                     }`}
                   >
                     {s.label}
@@ -98,9 +100,9 @@ export default function PhoneScrub({ project }) {
             <div className="flex min-h-0 items-center justify-center [perspective:1400px]">
               <motion.div
                 style={reduce ? undefined : { rotateY: turn, y: rise }}
-                className="relative aspect-[9/20] h-full max-h-[620px] rounded-[2.5rem] bg-[#15171c] p-[7px] shadow-[0_60px_120px_-40px_rgb(0_0_0/0.95)] ring-1 ring-white/[0.14] lg:h-[min(72dvh,620px)]"
+                className="relative aspect-[1170/2532] h-full max-h-[640px] rounded-[2.6rem] bg-[#15171c] p-[7px] shadow-[0_60px_120px_-40px_rgb(0_0_0/0.95)] ring-1 ring-white/[0.14] lg:h-[min(74dvh,640px)]"
               >
-                <div className="relative h-full w-full overflow-hidden rounded-[2.05rem] bg-white">
+                <div className="relative h-full w-full overflow-hidden rounded-[2.15rem] bg-white">
                   <motion.div
                     className="h-full"
                     initial={false}
@@ -115,24 +117,20 @@ export default function PhoneScrub({ project }) {
                           fill
                           sizes="(min-width: 1024px) 290px, 60vw"
                           quality={90}
-                          loading="eager"
+                          // clipped screens are invisible to native lazy loading
+                          loading={near ? "eager" : "lazy"}
+                          fetchPriority="low"
                           className="object-cover object-top"
                         />
                       </div>
                     ))}
                   </motion.div>
 
-                  {/* status bar drawn here; the emulator's own was removed */}
-                  <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 flex h-[4.2%] min-h-[18px] items-center justify-between px-[8%] text-[10px] font-semibold text-black/75">
-                    <span>9:41</span>
-                    <span className="absolute left-1/2 top-1/2 h-[7px] w-[7px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/85" />
-                    <span className="flex items-center gap-1">
-                      <span className="h-[7px] w-[11px] rounded-[2px] bg-black/70" />
-                      <span className="h-[8px] w-[15px] rounded-[2.5px] border border-black/60 p-[1px]">
-                        <span className="block h-full w-3/4 rounded-[1px] bg-black/70" />
-                      </span>
-                    </span>
-                  </div>
+                  {/* Dynamic Island: screenshots never include it */}
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-1/2 top-[1.35%] h-[3.5%] w-[31%] -translate-x-1/2 rounded-full bg-black"
+                  />
                 </div>
               </motion.div>
             </div>

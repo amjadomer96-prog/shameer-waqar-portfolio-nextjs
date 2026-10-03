@@ -13,10 +13,20 @@ Each project gets its own scroll choreography, accent colour and particle shape.
 
 | Project | Showcase | Component | Particle shape |
 |---|---|---|---|
-| iFund | A pinned phone that steps through six real app screens, one flow step per screen | `showcase/PhoneScrub.js` | Rising bars |
+| iFund | A pinned phone that steps through nine real app screens, one flow step per screen | `showcase/PhoneScrub.js` | Rising bars |
 | LDS Library | A browser window that arrives tilted in 3D, lays flat, then fills the screen while the walkthrough plays | `showcase/BrowserFlatten.js` | A wall of cards |
 | Amariya | A voice orb that opens into the site while a transcript line appears word by word | `showcase/IrisReveal.js` | A breathing orb |
 | SafaLife | Screens slide sideways as you scroll, filling a points counter and a seven-day streak | `showcase/HorizontalDeck.js` | A crescent |
+
+Under each showcase, `ProjectDetails` lists the role, the stack and every
+feature group from `lib/projects.js`.
+
+## The skills globe
+
+`components/site/Skills3D.js` places every skill on a sphere and projects it
+each frame, so nearer labels are larger and brighter. It spins on its own,
+tilts to the active group as the page scrolls, and can be dragged. The
+particle field draws the sphere and its orbits behind the labels.
 
 ## The particle field
 
@@ -36,6 +46,10 @@ touch devices) that morph between shapes as the page scrolls.
 
 ## Other features
 
+- **Navigation**: the header marks the section you are in, shows scroll
+  progress, and keeps the URL in sync (`#amariya`, `#contact`), so any
+  section can be linked to directly.
+
 - **Command palette**: `Ctrl K`, `Cmd K` or `/` to jump to any section or
   project, copy the email address or open a link. It is also the menu on
   small screens.
@@ -44,10 +58,23 @@ touch devices) that morph between shapes as the page scrolls.
 - **Reduced motion or no WebGL2**: no canvas, nothing pinned, all content
   shown in normal flow.
 
+## Accessibility and UX checks
+
+Measured in a browser at phone, tablet and desktop sizes:
+
+- Text contrast is at least 4.5:1 and nothing readable is under 12px.
+- Controls are at least 44px on touch layouts and 24px on desktop.
+- Jumps move keyboard focus to the section; the palette has a visible close
+  button and 44px rows.
+- The SafaLife deck also responds to a sideways swipe on touch screens.
+- Media below the fold waits until its section is near (`motion/useNear.js`).
+- On wide screens the particle cloud measures where a section's text ends
+  (`data-field-clear`) and fits into the space left over.
+
 ## Where to edit
 
 - `lib/projects.js` — projects: copy, stack, links, accent, media.
-- `lib/profile.js` — skills, experience, education.
+- `lib/profile.js` — about text, skills, experience, education.
 - `lib/site.js` — email, phone and social links.
 - `public/work/` — app screens and site recordings.
 

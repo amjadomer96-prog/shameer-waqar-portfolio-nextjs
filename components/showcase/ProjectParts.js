@@ -26,21 +26,23 @@ export function ProjectHeader({ project, className = "", size = "lg" }) {
   );
 }
 
-// Sits in normal flow under each pinned showcase: what I did and with what.
+// Sits in normal flow under each pinned showcase: my role, the stack, and
+// everything the product does, grouped.
 export function ProjectDetails({ project }) {
   return (
-    <div className="wrap relative grid gap-10 pb-28 pt-14 sm:pb-36 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.6fr)] lg:gap-16">
-      <Reveal>
+    <div className="wrap relative grid gap-12 pb-28 pt-14 sm:pb-36 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.9fr)] lg:gap-16">
+      <Reveal className="lg:sticky lg:top-24 lg:self-start">
         <p className="label">Role</p>
         <p className="mt-3 text-[17px] leading-snug">{project.role}</p>
-        <div className="mt-6 flex flex-wrap gap-2">
+        <p className="label mt-8">Built with</p>
+        <div className="mt-3 flex flex-wrap gap-2">
           {project.stack.map((s) => (
             <span key={s} className="chip">
               {s}
             </span>
           ))}
         </div>
-        <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
+        <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
           {project.live && (
             <a href={project.live} target="_blank" rel="noopener noreferrer" className="btn btn-accent btn-sm">
               Visit {project.domain}
@@ -55,13 +57,20 @@ export function ProjectDetails({ project }) {
         </div>
       </Reveal>
 
-      <ul className="plus-list grid gap-x-10 gap-y-5 text-[15.5px] leading-relaxed text-ink/85 sm:grid-cols-3">
-        {project.points.map((pt, i) => (
-          <Reveal as="li" key={pt} delay={0.07 * i}>
-            {pt}
+      <div className="grid gap-x-12 gap-y-10 sm:grid-cols-2">
+        {project.features.map((group, i) => (
+          <Reveal key={group.title} delay={0.05 * (i % 2)}>
+            <h3 className="border-t border-ink/10 pt-4 text-[17px] font-semibold tracking-[-0.02em]">
+              {group.title}
+            </h3>
+            <ul className="plus-list mt-4 space-y-2.5 text-[15px] leading-relaxed text-ink/80">
+              {group.items.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
           </Reveal>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

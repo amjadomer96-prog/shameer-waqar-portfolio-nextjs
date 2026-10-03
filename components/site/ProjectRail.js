@@ -45,17 +45,17 @@ export default function ProjectRail() {
                   e.preventDefault();
                   scrollToId(p.slug);
                 }}
-                className="group flex items-center justify-end gap-3"
+                className="group flex min-h-6 items-center justify-end gap-3"
               >
                 <span
-                  className="rounded-full bg-bg/90 px-2 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-muted opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  className="rounded-full bg-bg/90 px-2 py-1 font-mono text-[12px] uppercase tracking-[0.12em] text-muted opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
                   style={{ color: on ? p.accent : undefined }}
                 >
                   {p.name}
                 </span>
                 <span
                   aria-hidden="true"
-                  className={`h-px transition-all duration-200 ease-snap ${on ? "w-8" : "w-4 bg-ink/30 group-hover:w-6"}`}
+                  className={`h-px w-8 origin-right transition-transform duration-200 ease-snap ${on ? "scale-x-100" : "scale-x-50 bg-ink/30 group-hover:scale-x-75"}`}
                   style={on ? { background: p.accent } : undefined}
                 />
               </a>

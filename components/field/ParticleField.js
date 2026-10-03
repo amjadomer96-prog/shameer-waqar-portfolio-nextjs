@@ -83,7 +83,31 @@ function measureStops() {
   return [...document.querySelectorAll("[data-shape]")].map((el) => {
     const top = el.getBoundingClientRect().top + window.scrollY;
     const alpha = Number(el.dataset.alpha ?? 0.5);
+    // right edge of the section's text block, if it marks one with data-field-clear
+    const text = el.querySelector("[data-field-clear]");
+    let clearRight = null;
+    if (text) {
+      const range = document.createRange();
+      range.selectNodeContents(text);
+      clearRight = range.getBoundingClientRect().right;
+    }
+    // an element the cloud should sit exactly on (centre and size, in px);
+    // y is measured inside the section's pinned frame
+    const target = el.querySelector("[data-field-at]");
+    const frame = el.querySelector("[data-field-frame]");
+    let at = null;
+    if (target && frame) {
+      const t = target.getBoundingClientRect();
+      const f = frame.getBoundingClientRect();
+      at = { cx: t.left + t.width / 2, cy: t.top - f.top + t.height / 2, size: Math.min(t.width, t.height) };
+    }
+    // where the pinned part of the section ends (the details follow in normal flow)
+    const pinned = el.hasAttribute("data-pin") ? el.firstElementChild : null;
+    const pinEnd = pinned ? Math.max(top, top + pinned.offsetHeight - vh) : null;
     return {
+      at,
+      pinEnd,
+      clearRight,
       start: top,
       end: Math.max(top, top + el.offsetHeight - vh),
       shape: el.dataset.shape,
@@ -109,6 +133,14 @@ function place(stop, vw, vh, out) {
   out.s = 1;
   out.dim = 1;
 
+  if (stop.at) {
+    const unit = px / vw; // pixels per world unit
+    out.x = (stop.at.cx / px - 0.5) * vw;
+    out.y = -(stop.at.cy / window.innerHeight - 0.5) * vh;
+    out.s = stop.at.size / unit / 2.9; // the globe with its orbits is ~2.9 units across
+    return out;
+  }
+
   if (px < 1024) {
     if (stop.narrow === "top") {
       out.y += vh * 0.285;
@@ -130,8 +162,17 @@ function place(stop, vw, vh, out) {
   const tight = px < 1280;
   switch (stop.anchor) {
     case "right":
-      out.x = vw * (tight ? 0.3 : 0.25);
-      out.s = tight ? 0.78 : 1;
+      if (stop.clearRight != null) {
+        // fit into whatever the text leaves free, at any screen size
+        const left = stop.clearRight + 36;
+        const right = px - 28;
+        const unit = px / vw; // pixels per world unit
+        out.s = Math.min(1, Math.max(0, right - left) / (2.75 * unit));
+        out.x = ((left + right) / 2 / px - 0.5) * vw;
+      } else {
+        out.x = vw * (tight ? 0.3 : 0.25);
+        out.s = tight ? 0.78 : 1;
+      }
       break;
     case "left":
       out.x = -vw * 0.25;
@@ -214,6 +255,8 @@ function Cloud({ count }) {
       current.current = -1;
     };
     measure();
+    // text extents change once the web font arrives
+    document.fonts?.ready.then(measure);
     const ro = new ResizeObserver(measure);
     ro.observe(document.body);
     window.addEventListener("resize", measure);
@@ -253,7 +296,10 @@ function Cloud({ count }) {
 
     const t = b === a ? 0 : clamp01((y - a.end) / Math.max(1, b.start - a.end));
     const e = smooth(t);
-    const hold = a.end > a.start ? clamp01((y - a.start) / (a.end - a.start)) : 0;
+    const holdEnd = a.pinEnd ?? a.end;
+    const hold = holdEnd > a.start ? clamp01((y - a.start) / (holdEnd - a.start)) : 0;
+    // 0 while pinned, 1 once the details below have scrolled in
+    const after = a.pinEnd != null ? clamp01((y - a.pinEnd) / (window.innerHeight * 0.45)) : 0;
 
     const A = place(a, viewport.width, viewport.height, pa.current);
     const B = place(b, viewport.width, viewport.height, pb.current);
@@ -264,7 +310,8 @@ function Cloud({ count }) {
     g.rotation.x = -pointer.current.y * 0.09;
 
     const intro = clamp01((time - born.current) / 1.4);
-    const alphaA = lerp(a.alpha, a.alphaEnd, hold) * A.dim;
+    const held = lerp(a.alpha, a.alphaEnd, hold);
+    const alphaA = lerp(held, Math.min(held, 0.07), after) * A.dim;
     u.uAlpha.value = lerp(alphaA, b.alpha * B.dim, e) * intro;
     u.uMix.value = t;
     u.uScale.value = s;

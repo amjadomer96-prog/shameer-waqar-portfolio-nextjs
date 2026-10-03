@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "@phosphor-icons/react/ssr";
 import { fieldProps } from "@/lib/field";
 import { ALSO_SHIPPED } from "@/lib/projects";
-import { CAPABILITIES, EDUCATION, ROLES } from "@/lib/profile";
+import { ABOUT, CAPABILITIES, EDUCATION, ROLES } from "@/lib/profile";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, PHONE, PHONE_HREF, SOURCE_URL } from "@/lib/site";
 import Reveal from "@/components/motion/Reveal";
 import CopyEmail from "@/components/contact/CopyEmail";
@@ -23,48 +23,51 @@ export function WorkIntro() {
   );
 }
 
-export function Skills() {
+export function About() {
   return (
     <section
-      id="skills"
-      aria-labelledby="skills-title"
+      id="about"
+      aria-labelledby="about-title"
       className="relative border-t border-ink/10 py-28 sm:py-36"
-      {...fieldProps({ shape: "wave", anchor: "back", alpha: 0.15 })}
+      {...fieldProps({ shape: "wave", anchor: "back", alpha: 0.13 })}
     >
       <div className="wrap">
-        <Reveal>
-          <p className="label">What I do</p>
-          <h2 id="skills-title" className={`mt-4 max-w-[16ch] ${H2}`}>
-            One developer, both sides of the screen.
-          </h2>
-        </Reveal>
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-20">
+          <Reveal>
+            <p className="label">About</p>
+            <h2 id="about-title" className={`mt-4 max-w-[17ch] ${H2}`}>
+              {ABOUT.heading}
+            </h2>
+            <div className="mt-7 max-w-[60ch] space-y-4 text-[17px] leading-relaxed text-ink/80">
+              {ABOUT.paragraphs.map((p) => (
+                <p key={p}>{p}</p>
+              ))}
+            </div>
+          </Reveal>
 
-        <ul className="mt-14 border-t border-ink/10">
+          <dl className="grid grid-cols-2 gap-x-8 gap-y-10 self-end">
+            {ABOUT.facts.map((fact, i) => (
+              <Reveal key={fact.label} delay={0.06 * i} className="flex flex-col border-t border-ink/10 pt-4">
+                <dt className="order-2 mt-2 text-[14px] leading-snug text-muted">{fact.label}</dt>
+                <dd className="font-mono text-[clamp(2rem,3.6vw,3rem)] font-medium leading-none tracking-[-0.04em] tabular-nums">
+                  {fact.value}
+                </dd>
+              </Reveal>
+            ))}
+          </dl>
+        </div>
+
+        <h3 className="label mt-20">What I do</h3>
+        <ul className="mt-5 border-t border-ink/10">
           {CAPABILITIES.map((c, i) => (
             <Reveal
               as="li"
               key={c.title}
-              delay={0.06 * i}
-              className="grid gap-x-10 gap-y-3 border-b border-ink/10 py-8 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.6fr)]"
+              delay={0.05 * i}
+              className="grid gap-x-10 gap-y-2 border-b border-ink/10 py-7 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.6fr)]"
             >
-              <h3 className="flex flex-wrap items-center gap-3 text-[1.35rem] font-semibold tracking-[-0.03em]">
-                {c.title}
-                {c.note && (
-                  <span className="rounded-full border border-accent/40 px-2.5 py-0.5 font-mono text-[11px] font-normal tracking-normal text-accent">
-                    {c.note}
-                  </span>
-                )}
-              </h3>
-              <div>
-                <p className="max-w-[58ch] text-[16px] leading-relaxed text-ink/80">{c.line}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {c.tags.map((t) => (
-                    <span key={t} className="chip">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              <p className="text-[1.3rem] font-semibold tracking-[-0.03em]">{c.title}</p>
+              <p className="max-w-[62ch] text-[16px] leading-relaxed text-ink/80">{c.line}</p>
             </Reveal>
           ))}
         </ul>
@@ -75,7 +78,12 @@ export function Skills() {
 
 export function Path() {
   return (
-    <section id="path" aria-labelledby="path-title" className="relative border-t border-ink/10 py-28 sm:py-36">
+    <section
+      id="path"
+      aria-labelledby="path-title"
+      className="relative border-t border-ink/10 py-28 sm:py-36"
+      {...fieldProps({ shape: "wave", anchor: "back", alpha: 0.12 })}
+    >
       <div className="wrap">
         <Reveal>
           <p className="label">Path</p>
@@ -87,15 +95,16 @@ export function Path() {
         <div className="mt-14 grid gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-20">
           <div>
             <h3 className="label">Experience</h3>
+            <p className="sr-only">Most recent first.</p>
             <ol className="mt-5">
               {ROLES.map((r, i) => (
                 <Reveal as="li" key={r.title} delay={0.06 * i} className="border-t border-ink/10 py-6">
                   <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                     <p className="text-[1.3rem] font-semibold tracking-[-0.03em]">{r.title}</p>
-                    <p className="font-mono text-[12.5px] text-muted">{r.period}</p>
+                    <p className="font-mono text-[13px] text-muted">{r.period}</p>
                   </div>
                   <p className="mt-1 text-[15px] text-accent">{r.org}</p>
-                  <ul className="plus-list mt-4 space-y-2 text-[15px] leading-relaxed text-ink/80">
+                  <ul className="plus-list mt-4 space-y-2.5 text-[15px] leading-relaxed text-ink/80">
                     {r.lines.map((l) => (
                       <li key={l}>{l}</li>
                     ))}
@@ -119,7 +128,7 @@ export function Path() {
                     <p className="text-[16px] font-medium tracking-[-0.01em]">{e.title}</p>
                     <p className="mt-0.5 text-[14px] text-muted">{e.org}</p>
                   </div>
-                  <p className="font-mono text-[12.5px] text-muted">{e.period}</p>
+                  <p className="font-mono text-[13px] text-muted">{e.period}</p>
                 </Reveal>
               ))}
             </ol>
@@ -170,7 +179,7 @@ export function Contact() {
       {...fieldProps({ shape: "monogram", anchor: "right", alpha: 0.85 })}
     >
       <div className="wrap">
-        <div className="max-w-[40rem]">
+        <div className="max-w-[40rem]" data-field-clear="">
           <Reveal>
             <p className="label">Contact</p>
             <h2
@@ -201,7 +210,7 @@ export function Contact() {
                   className="group flex items-baseline justify-between gap-6 py-4 transition-colors duration-150 hover:text-accent"
                 >
                   <span className="label w-20 shrink-0 group-hover:text-accent">{c.label}</span>
-                  <span className="min-w-0 flex-1 break-all text-[15.5px]">{c.value}</span>
+                  <span className="min-w-0 flex-1 text-[16px] [overflow-wrap:anywhere]">{c.value}</span>
                   <ArrowUpRight
                     size={15}
                     aria-hidden="true"
@@ -220,16 +229,16 @@ export function Contact() {
 export function Footer() {
   return (
     <footer className="relative border-t border-ink/10 py-8">
-      <div className="wrap flex flex-col gap-4 text-[13.5px] text-muted sm:flex-row sm:items-center sm:justify-between">
+      <div className="wrap flex flex-col gap-4 text-[14px] text-muted sm:flex-row sm:items-center sm:justify-between">
         <p>&copy; 2026 Shameer Waqar. Designed and built in Karachi.</p>
-        <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-2">
-          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+        <nav aria-label="Footer" className="-my-3 flex flex-wrap gap-x-6">
+          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="-mx-1 px-1 py-3 hover:text-ink">
             GitHub
           </a>
-          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="-mx-1 px-1 py-3 hover:text-ink">
             LinkedIn
           </a>
-          <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+          <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer" className="-mx-1 px-1 py-3 hover:text-ink">
             Site source
           </a>
         </nav>

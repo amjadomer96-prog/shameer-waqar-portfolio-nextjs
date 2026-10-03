@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowUpRight, ArrowElbowDownLeft, MagnifyingGlass } from "@phosphor-icons/react";
+import { ArrowUpRight, ArrowElbowDownLeft, MagnifyingGlass, X } from "@phosphor-icons/react";
 import { PROJECTS } from "@/lib/projects";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, PHONE_HREF } from "@/lib/site";
 import { scrollToId } from "@/components/motion/SmoothScroll";
@@ -13,6 +13,7 @@ const ITEMS = [
   { group: "Go to", label: "Top", to: "top" },
   { group: "Go to", label: "Selected work", to: "work" },
   ...PROJECTS.map((p) => ({ group: "Projects", label: p.name, hint: p.kind, to: p.slug })),
+  { group: "Go to", label: "About", to: "about" },
   { group: "Go to", label: "Skills", to: "skills" },
   { group: "Go to", label: "Experience and education", to: "path" },
   { group: "Go to", label: "Contact", to: "contact" },
@@ -153,7 +154,15 @@ export default function CommandPalette() {
           spellCheck={false}
           className="h-[52px] w-full bg-transparent text-[15px] outline-none placeholder:text-muted/70"
         />
-        <kbd className="kbd">Esc</kbd>
+        <button
+          type="button"
+          onClick={close}
+          aria-label="Close"
+          className="-mr-2 grid h-11 min-w-11 shrink-0 place-items-center rounded-[9px] text-muted transition-colors duration-150 hover:text-ink"
+        >
+          <kbd className="kbd hidden md:inline-flex">Esc</kbd>
+          <X size={18} className="md:hidden" aria-hidden="true" />
+        </button>
       </div>
 
       <ul id="palette-list" role="listbox" aria-label="Results" className="max-h-[min(52vh,420px)] overflow-y-auto p-2">
@@ -175,12 +184,12 @@ export default function CommandPalette() {
                 aria-selected={i === active}
                 onPointerMove={() => i !== active && setActive(i)}
                 onClick={() => run(item)}
-                className={`flex cursor-pointer items-center justify-between gap-4 rounded-[9px] px-3 py-2.5 text-[14.5px] ${
+                className={`flex min-h-11 cursor-pointer items-center justify-between gap-4 rounded-[9px] px-3 py-2.5 text-[15px] ${
                   i === active ? "bg-ink/[0.08]" : ""
                 }`}
               >
                 <span className="truncate">{isCopied ? "Copied" : item.label}</span>
-                <span className="flex shrink-0 items-center gap-2 text-[12.5px] text-muted">
+                <span className="flex shrink-0 items-center gap-2 text-[13px] text-muted">
                   {item.hint && <span className="hidden max-w-[220px] truncate sm:inline">{item.hint}</span>}
                   {item.external ? (
                     <ArrowUpRight size={13} aria-hidden="true" />

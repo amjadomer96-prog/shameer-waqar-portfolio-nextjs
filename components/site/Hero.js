@@ -51,7 +51,7 @@ export default function Hero() {
       {...fieldProps({ shape: "stack", anchor: "right", narrow: "top", alpha: 0.9 })}
     >
       <div className="wrap flex flex-1 items-end pb-10 pt-[36dvh] lg:items-center lg:pt-28">
-        <div className="max-w-[46rem]">
+        <div className="max-w-[46rem]" data-field-clear="">
           <motion.p {...enter(0)} className="label">
             Shameer Waqar
             <span className="mx-2 text-ink/25" aria-hidden="true">
@@ -63,7 +63,7 @@ export default function Hero() {
           <h1
             id="hero-title"
             aria-label={HEADLINE.map((l) => l.text).join(" ")}
-            className="mt-6 text-[clamp(2.7rem,7.4vw,6.1rem)] font-semibold leading-[0.96] tracking-[-0.05em]"
+            className="mt-6 text-[clamp(2.7rem,6.6vw,6.1rem)] font-semibold leading-[0.96] tracking-[-0.05em]"
           >
             {HEADLINE.map((line) => (
               <span key={line.text} aria-hidden="true" className={`block ${line.accent ? "text-accent" : ""}`}>
@@ -87,9 +87,9 @@ export default function Hero() {
           </h1>
 
           <motion.p {...enter(0.75)} className="mt-8 max-w-[52ch] text-[17px] leading-relaxed text-muted sm:text-lg">
-            I take products from Figma to working software: React Native and
-            Flutter on the phone, React and Node behind it. Currently at Legit
-            Design Studio in Karachi.
+            I take products from Figma to release: React Native and Flutter
+            apps, React and Node behind them, and real-time 3D in the browser
+            with Three.js.
           </motion.p>
 
           <motion.div {...enter(0.85)} className="mt-9 flex flex-wrap items-center gap-3">
@@ -114,13 +114,13 @@ export default function Hero() {
       <div className="wrap">
       <motion.dl {...enter(1)} className="grid gap-x-10 border-t border-ink/10 sm:grid-cols-3">
         {[
-          ["Now", "Building the iFund app in React Native"],
+          ["Now", "Full Stack Developer, Legit Design Studio"],
           ["Based", null],
           ["Open to", "Freelance web and mobile projects"],
         ].map(([k, v]) => (
           <div key={k} className="flex items-baseline gap-4 border-b border-ink/10 py-4 sm:border-b-0">
             <dt className="label w-16 shrink-0">{k}</dt>
-            <dd className="text-[14.5px] text-ink/85">
+            <dd className="text-[15px] text-ink/85">
               {v ?? (
                 <>
                   Karachi, Pakistan <span className="text-muted">/</span> <LocalTime />

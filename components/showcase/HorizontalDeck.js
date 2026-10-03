@@ -11,12 +11,13 @@ import {
 } from "motion/react";
 import { fieldProps } from "@/lib/field";
 import { useReduced } from "@/components/motion/useReduced";
+import { useNear } from "@/components/motion/useNear";
 import { ProjectDetails, ProjectHeader } from "./ProjectParts";
 
 const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
 // A screen in the deck: it tips in, sits level at the centre, tips out.
-function Card({ p, shot, at }) {
+function Card({ p, shot, at, near }) {
   const rotate = useTransform(p, [at - 0.3, at, at + 0.3], [7, 0, -7]);
   const y = useTransform(p, [at - 0.3, at, at + 0.3], [44, 0, 44]);
   return (
@@ -28,8 +29,10 @@ function Card({ p, shot, at }) {
         height={shot.h}
         sizes="(min-width: 640px) 420px, 70vw"
         quality={90}
-        loading="eager"
-        className="h-[min(54dvh,540px)] w-auto rounded-[18px] ring-1 ring-white/10"
+        loading={near ? "eager" : "lazy"}
+        fetchPriority="low"
+        draggable={false}
+        className="h-[min(54dvh,540px)] w-auto select-none rounded-[18px] ring-1 ring-white/10"
       />
       <p className="label mt-4 flex items-center justify-between">
         <span>{shot.label}</span>
@@ -48,7 +51,9 @@ export default function HorizontalDeck({ project }) {
   const ref = useRef(null);
   const track = useRef(null);
   const counter = useRef(null);
+  const drag = useRef(null);
   const reduce = useReduced();
+  const near = useNear(ref);
   const deck = project.deck;
   const total = deck.reduce((sum, d) => sum + d.points, 0);
   const [travel, setTravel] = useState(0);
@@ -81,6 +86,29 @@ export default function HorizontalDeck({ project }) {
     const next = Math.min(7, Math.max(0, Math.floor(v * 8)));
     if (next !== streak) setStreak(next);
   });
+
+  // The deck moves sideways, so people try to swipe it sideways. A horizontal
+  // touch drag is turned into the equivalent vertical scroll (vertical drags
+  // are left to the browser).
+  const onPointerDown = (e) => {
+    if (e.pointerType === "mouse") return;
+    drag.current = { x: e.clientX, y: e.clientY, last: e.clientX, active: false };
+  };
+  const onPointerMove = (e) => {
+    const d = drag.current;
+    if (!d || !ref.current || travel <= 0) return;
+    if (!d.active) {
+      const dx = Math.abs(e.clientX - d.x);
+      if (dx < 10 || dx < Math.abs(e.clientY - d.y)) return; // threshold, and sideways intent
+      d.active = true;
+    }
+    const range = ref.current.offsetHeight - window.innerHeight;
+    window.scrollBy(0, (-(e.clientX - d.last) * 0.92 * range) / travel);
+    d.last = e.clientX;
+  };
+  const endDrag = () => {
+    drag.current = null;
+  };
 
   const field = fieldProps({ shape: project.shape, accent: project.accent, anchor: "top", alpha: 0.95 });
 
@@ -145,7 +173,11 @@ export default function HorizontalDeck({ project }) {
             <motion.ul
               ref={track}
               style={{ x }}
-              className="flex w-max items-start gap-6 pl-[var(--gx)] pr-[var(--gx)] sm:gap-9 xl:pl-[max(var(--gx),calc((100vw-1240px)/2+var(--gx)))]"
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
+              className="flex w-max touch-pan-y items-start gap-6 pl-[var(--gx)] pr-[var(--gx)] sm:gap-9 xl:pl-[max(var(--gx),calc((100vw-1240px)/2+var(--gx)))]"
             >
               <li className="flex h-[min(54dvh,540px)] w-[min(78vw,380px)] shrink-0 flex-col justify-center">
                 <Image
@@ -161,7 +193,7 @@ export default function HorizontalDeck({ project }) {
                 <p className="label mt-6">Scroll to earn the streak</p>
               </li>
               {deck.map((shot, i) => (
-                <Card key={shot.src} p={p} shot={shot} at={0.04 + ((i + 1) / deck.length) * 0.88} />
+                <Card key={shot.src} p={p} shot={shot} near={near} at={0.04 + ((i + 1) / deck.length) * 0.88} />
               ))}
             </motion.ul>
           </div>

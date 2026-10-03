@@ -12,7 +12,7 @@ const LINE = "Press the orb and speak. She walks you through the page.";
 
 // One spoken word: sharpens and rises as the scroll reaches it.
 function Word({ p, at, children }) {
-  const opacity = useTransform(p, [at, at + 0.035], [0.16, 1]);
+  const opacity = useTransform(p, [at, at + 0.035], [0.24, 1]);
   const y = useTransform(p, [at, at + 0.035], [16, 0]);
   const blur = useTransform(p, [at, at + 0.035], [8, 0]);
   const filter = useMotionTemplate`blur(${blur}px)`;

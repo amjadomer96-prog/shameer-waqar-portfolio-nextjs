@@ -64,7 +64,7 @@ export default function BrowserFlatten({ project }) {
                     <span className="h-2.5 w-2.5 rounded-full bg-ink/15" />
                     <span className="h-2.5 w-2.5 rounded-full bg-ink/15" />
                   </span>
-                  <span className="truncate font-mono text-[11.5px] text-muted">{project.domain}</span>
+                  <span className="truncate font-mono text-[12px] text-muted">{project.domain}</span>
                 </div>
                 <AutoVideo src={project.video} poster={project.poster} label={`${project.name} walkthrough`} />
               </div>

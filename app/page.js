@@ -4,7 +4,8 @@ import Header from "@/components/site/Header";
 import Hero from "@/components/site/Hero";
 import ProjectRail from "@/components/site/ProjectRail";
 import CommandPalette from "@/components/site/CommandPalette";
-import { Contact, Footer, Path, Skills, WorkIntro } from "@/components/site/Sections";
+import { About, Contact, Footer, Path, WorkIntro } from "@/components/site/Sections";
+import Skills3D from "@/components/site/Skills3D";
 import PhoneScrub from "@/components/showcase/PhoneScrub";
 import BrowserFlatten from "@/components/showcase/BrowserFlatten";
 import IrisReveal from "@/components/showcase/IrisReveal";
@@ -28,7 +29,8 @@ export default function Home() {
           <BrowserFlatten project={project("lds-library")} />
           <IrisReveal project={project("amariya")} />
           <HorizontalDeck project={project("safalife")} />
-          <Skills />
+          <About />
+          <Skills3D />
           <Path />
           <Contact />
         </main>

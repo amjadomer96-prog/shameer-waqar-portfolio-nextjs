@@ -34,6 +34,11 @@ export function scrollToId(id) {
   const el = document.getElementById(id);
   if (!el) return;
   const offset = el.hasAttribute("data-pin") ? 0 : -72;
+  // shareable URL, and focus follows the jump (without a second scroll)
+  window.history.replaceState(null, "", id === "top" ? window.location.pathname : "#" + id);
+  el.setAttribute("tabindex", "-1");
+  el.setAttribute("data-jump", "");
+  el.focus({ preventScroll: true });
   const y = Math.max(0, el.getBoundingClientRect().top + window.scrollY + offset);
   if (window.__lenis) {
     window.__lenis.scrollTo(y, { duration: 1.3 });
