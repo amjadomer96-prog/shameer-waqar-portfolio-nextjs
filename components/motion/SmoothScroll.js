@@ -11,7 +11,22 @@ export default function SmoothScroll() {
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const coarse = window.matchMedia("(pointer: coarse)").matches;
-    if (reduce || coarse) return;
+
+    if (reduce) {
+      // The showcases switch to their shorter, unpinned layout just after
+      // hydration, which moves every section below them. Re-apply the deep link.
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      if (!id) return;
+      let inner = 0;
+      const outer = requestAnimationFrame(() => {
+        inner = requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView());
+      });
+      return () => {
+        cancelAnimationFrame(outer);
+        cancelAnimationFrame(inner);
+      };
+    }
+    if (coarse) return;
 
     const lenis = new Lenis({ autoRaf: false, lerp: 0.1 });
     const update = ({ timestamp }) => lenis.raf(timestamp);

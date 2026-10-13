@@ -23,6 +23,11 @@
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 72px;
   }
+  /* pinned showcases fill the screen and leave their own room for the header,
+     so a #hash jump must land at their exact top (this cancels the padding) */
+  [data-pin] {
+    scroll-margin-top: -72px;
+  }
   body {
     background: rgb(var(--bg));
     color: rgb(var(--ink));

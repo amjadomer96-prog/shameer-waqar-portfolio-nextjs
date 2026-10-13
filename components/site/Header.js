@@ -65,11 +65,11 @@ export default function Header() {
         scrolled ? "border-ink/10 bg-bg/95" : "border-transparent"
       }`}
     >
-      <div className="wrap flex h-14 items-center justify-between gap-4">
+      <div className="wrap flex h-14 items-center justify-between gap-2 sm:gap-4">
         <a
           href="#top"
           onClick={go("top")}
-          className="-ml-2 flex h-11 items-center gap-2 px-2 text-[15px] font-semibold tracking-[-0.02em]"
+          className="-ml-2 flex h-11 items-center gap-2 whitespace-nowrap px-2 text-[15px] font-semibold tracking-[-0.02em]"
         >
           <span className="font-mono text-accent" aria-hidden="true">
             +
@@ -117,16 +117,16 @@ export default function Header() {
               <kbd className="kbd">K</kbd>
             </span>
           </button>
-          <a href={`mailto:${EMAIL}`} className="btn btn-primary btn-sm">
+          <a href={`mailto:${EMAIL}`} className="btn btn-primary btn-sm max-[379px]:hidden">
             Say hello
           </a>
           <button
             type="button"
             onClick={openPalette}
-            aria-label="Open menu"
-            className="grid h-11 w-11 place-items-center rounded-[10px] border border-ink/10 text-ink md:hidden"
+            className="inline-flex h-11 items-center gap-2 rounded-[10px] border border-ink/10 px-3 text-sm font-medium text-ink md:hidden"
           >
-            <List size={20} aria-hidden="true" />
+            <List size={18} aria-hidden="true" />
+            Menu
           </button>
         </div>
       </div>

@@ -188,7 +188,7 @@ export default function Skills3D() {
     >
       <div ref={ref} className="h-[330vh]">
         <div data-field-frame="" className="sticky top-0 h-[100dvh] overflow-hidden">
-          <div className="wrap grid h-full grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] gap-4 pb-8 pt-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:grid-rows-1 lg:items-center lg:gap-12 lg:pb-0 lg:pt-14">
+          <div className="wrap grid h-full grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] gap-4 pb-8 pt-20 short:grid-cols-2 short:grid-rows-[auto_minmax(0,1fr)] short:gap-x-8 short:pb-4 short:pt-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:grid-rows-1 lg:items-center lg:gap-12 lg:pb-0 lg:pt-14">
             <div>
               {heading}
               <p className="mt-5 hidden max-w-[44ch] text-[16px] leading-relaxed text-muted lg:block">
@@ -231,7 +231,7 @@ export default function Skills3D() {
               </ul>
             </div>
 
-            <div className="flex min-h-0 items-center justify-center">
+            <div className="flex min-h-0 items-center justify-center short:col-start-2 short:row-span-2 short:row-start-1">
               <div
                 ref={stage}
                 data-field-at=""
@@ -241,7 +241,7 @@ export default function Skills3D() {
                 onPointerUp={endDrag}
                 onPointerLeave={endDrag}
                 onPointerCancel={endDrag}
-                className="relative aspect-square w-[min(100%,54dvh)] cursor-grab touch-pan-y select-none active:cursor-grabbing lg:h-[min(64dvh,580px)] lg:w-auto"
+                className="relative aspect-square w-[min(100%,54dvh)] cursor-grab touch-pan-y select-none active:cursor-grabbing short:h-full short:max-h-[78dvh] short:w-auto short:max-w-full lg:h-[min(64dvh,580px)] lg:w-auto"
               >
                 {SKILLS.map((s, i) => (
                   <span
@@ -259,7 +259,7 @@ export default function Skills3D() {
               </div>
             </div>
 
-            <div className="lg:hidden" aria-hidden="true">
+            <div className="short:col-start-1 short:row-start-2 lg:hidden" aria-hidden="true">
               <div className="mb-3 flex gap-1.5">
                 {SKILL_GROUPS.map((g, i) => (
                   <span

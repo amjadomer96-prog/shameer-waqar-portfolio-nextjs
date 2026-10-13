@@ -51,12 +51,16 @@ touch devices) that morph between shapes as the page scrolls.
   section can be linked to directly.
 
 - **Command palette**: `Ctrl K`, `Cmd K` or `/` to jump to any section or
-  project, copy the email address or open a link. It is also the menu on
-  small screens.
+  project, copy the email address or open a link. Every row has an icon, the
+  active row is marked, and a footer shows the keys and the result count. It
+  is also the menu on small screens, where it opens without raising the
+  keyboard.
 - **Project rail** on wide screens to jump between projects.
 - **Smooth scrolling** with Lenis on desktop, driven from Motion's frame loop.
-- **Reduced motion or no WebGL2**: no canvas, nothing pinned, all content
-  shown in normal flow.
+- **Reduced motion**: no canvas, and the showcases and skills section drop
+  their scroll animation and render in normal flow (the iFund phone still
+  steps through its screens, without the turn and rise).
+- **No WebGL2**: the particle canvas is skipped; everything else works as usual.
 
 ## Accessibility and UX checks
 

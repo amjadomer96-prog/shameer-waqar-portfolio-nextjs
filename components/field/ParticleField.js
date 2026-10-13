@@ -80,6 +80,9 @@ const lerp = THREE.MathUtils.lerp;
 
 function measureStops() {
   const vh = window.innerHeight;
+  // a section near the end of the page may never reach the top of the screen;
+  // its shape should be complete when the page bottoms out
+  const maxY = Math.max(0, document.documentElement.scrollHeight - vh);
   return [...document.querySelectorAll("[data-shape]")].map((el) => {
     const top = el.getBoundingClientRect().top + window.scrollY;
     const alpha = Number(el.dataset.alpha ?? 0.5);
@@ -108,7 +111,7 @@ function measureStops() {
       at,
       pinEnd,
       clearRight,
-      start: top,
+      start: Math.min(top, maxY),
       end: Math.max(top, top + el.offsetHeight - vh),
       shape: el.dataset.shape,
       color: new THREE.Color(el.dataset.accent || "#7ea2ff"),
@@ -127,15 +130,17 @@ function measureStops() {
 // reserves a band for the cloud (narrow: top / mid / center) or the cloud
 // becomes a faint backdrop. Text never rests on a bright cloud.
 function place(stop, vw, vh, out) {
-  const px = window.innerWidth;
+  const px = window.innerWidth; // breakpoints: matches CSS media queries
+  // the canvas and getBoundingClientRect exclude a classic scrollbar
+  const cw = document.documentElement.clientWidth || px;
   out.x = 0;
   out.y = -(stop.offsetY / window.innerHeight) * vh;
   out.s = 1;
   out.dim = 1;
 
   if (stop.at) {
-    const unit = px / vw; // pixels per world unit
-    out.x = (stop.at.cx / px - 0.5) * vw;
+    const unit = cw / vw; // pixels per world unit
+    out.x = (stop.at.cx / cw - 0.5) * vw;
     out.y = -(stop.at.cy / window.innerHeight - 0.5) * vh;
     out.s = stop.at.size / unit / 2.9; // the globe with its orbits is ~2.9 units across
     return out;
@@ -165,10 +170,10 @@ function place(stop, vw, vh, out) {
       if (stop.clearRight != null) {
         // fit into whatever the text leaves free, at any screen size
         const left = stop.clearRight + 36;
-        const right = px - 28;
-        const unit = px / vw; // pixels per world unit
+        const right = cw - 28;
+        const unit = cw / vw; // pixels per world unit
         out.s = Math.min(1, Math.max(0, right - left) / (2.75 * unit));
-        out.x = ((left + right) / 2 / px - 0.5) * vw;
+        out.x = ((left + right) / 2 / cw - 0.5) * vw;
       } else {
         out.x = vw * (tight ? 0.3 : 0.25);
         out.s = tight ? 0.78 : 1;
@@ -207,7 +212,7 @@ function Cloud({ count }) {
   const viewport = useThree((s) => s.viewport);
   const stops = useRef([]);
   const current = useRef(-1);
-  const pointer = useRef({ x: 0, y: 0 });
+  const pointer = useRef({ x: 0, y: 0, seen: false });
   const born = useRef(null);
   const pa = useRef({ x: 0, y: 0, s: 1, dim: 1 });
   const pb = useRef({ x: 0, y: 0, s: 1, dim: 1 });
@@ -260,15 +265,26 @@ function Cloud({ count }) {
     const ro = new ResizeObserver(measure);
     ro.observe(document.body);
     window.addEventListener("resize", measure);
+    // only a real mouse pushes particles; a touch would leave a dent behind
     const onMove = (e) => {
-      pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      if (e.pointerType !== "mouse") return;
+      const w = document.documentElement.clientWidth || window.innerWidth;
+      pointer.current.x = (e.clientX / w) * 2 - 1;
       pointer.current.y = -((e.clientY / window.innerHeight) * 2 - 1);
+      pointer.current.seen = true;
+    };
+    const onLeave = () => {
+      pointer.current.seen = false;
     };
     window.addEventListener("pointermove", onMove, { passive: true });
+    document.documentElement.addEventListener("pointerleave", onLeave);
+    window.addEventListener("blur", onLeave);
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", measure);
       window.removeEventListener("pointermove", onMove);
+      document.documentElement.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("blur", onLeave);
     };
   }, []);
 
@@ -319,10 +335,14 @@ function Cloud({ count }) {
     u.uPixelRatio.value = gl.getPixelRatio();
     u.uPulse.value = (a.shape === "orb" ? 1 - e : 0) + (b.shape === "orb" ? e : 0);
     u.uColor.value.lerpColors(a.color, b.color, e);
-    u.uPointer.value.set(
-      ((pointer.current.x * viewport.width) / 2 - g.position.x) / s,
-      ((pointer.current.y * viewport.height) / 2 - g.position.y) / s
-    );
+    if (pointer.current.seen && s > 0.001) {
+      u.uPointer.value.set(
+        ((pointer.current.x * viewport.width) / 2 - g.position.x) / s,
+        ((pointer.current.y * viewport.height) / 2 - g.position.y) / s
+      );
+    } else {
+      u.uPointer.value.set(99, 99); // parked: no pointer on the page
+    }
   });
 
   return (

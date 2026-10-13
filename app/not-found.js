@@ -6,7 +6,7 @@ export const metadata = {
 
 export default function NotFound() {
   return (
-    <main className="wrap grid min-h-[100dvh] place-content-center py-24">
+    <main id="main" className="wrap grid min-h-[100dvh] place-content-center py-24">
       <p className="label">Error 404</p>
       <h1 className="mt-4 max-w-[16ch] text-[clamp(2.4rem,6vw,4.5rem)] font-semibold leading-[1] tracking-[-0.045em]">
         This page doesn&apos;t exist.

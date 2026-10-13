@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
+
 const token = (name) => `rgb(var(--${name}) / <alpha-value>)`;
 
 module.exports = {
@@ -39,5 +41,11 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // "short:" is a phone on its side. Pinned frames switch to two columns there.
+    // A variant, not a screen: a raw screen would switch off Tailwind's max-* variants.
+    plugin(({ addVariant }) => {
+      addVariant("short", "@media (max-height: 500px) and (max-width: 1023px)");
+    }),
+  ],
 };

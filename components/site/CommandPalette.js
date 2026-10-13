@@ -1,7 +1,20 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowUpRight, ArrowElbowDownLeft, MagnifyingGlass, X } from "@phosphor-icons/react";
+import {
+  ArrowElbowDownLeft,
+  ArrowUpRight,
+  Copy,
+  EnvelopeSimple,
+  FolderSimple,
+  GithubLogo,
+  Globe,
+  Hash,
+  LinkedinLogo,
+  MagnifyingGlass,
+  Phone,
+  X,
+} from "@phosphor-icons/react";
 import { PROJECTS } from "@/lib/projects";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, PHONE_HREF } from "@/lib/site";
 import { scrollToId } from "@/components/motion/SmoothScroll";
@@ -10,24 +23,25 @@ const OPEN_EVENT = "palette:open";
 export const openPalette = () => window.dispatchEvent(new Event(OPEN_EVENT));
 
 const ITEMS = [
-  { group: "Go to", label: "Top", to: "top" },
-  { group: "Go to", label: "Selected work", to: "work" },
-  ...PROJECTS.map((p) => ({ group: "Projects", label: p.name, hint: p.kind, to: p.slug })),
-  { group: "Go to", label: "About", to: "about" },
-  { group: "Go to", label: "Skills", to: "skills" },
-  { group: "Go to", label: "Experience and education", to: "path" },
-  { group: "Go to", label: "Contact", to: "contact" },
-  { group: "Actions", label: "Copy email address", hint: EMAIL, copy: EMAIL },
-  { group: "Actions", label: "Write an email", href: `mailto:${EMAIL}` },
-  { group: "Actions", label: "Call", href: PHONE_HREF },
-  { group: "Links", label: "GitHub", href: GITHUB_URL, external: true },
-  { group: "Links", label: "LinkedIn", href: LINKEDIN_URL, external: true },
+  { group: "Go to", label: "Top", to: "top", icon: Hash },
+  { group: "Go to", label: "Selected work", to: "work", icon: Hash },
+  ...PROJECTS.map((p) => ({ group: "Projects", label: p.name, hint: p.kind, to: p.slug, icon: FolderSimple })),
+  { group: "Go to", label: "About", to: "about", icon: Hash },
+  { group: "Go to", label: "Skills", to: "skills", icon: Hash },
+  { group: "Go to", label: "Experience and education", to: "path", icon: Hash },
+  { group: "Go to", label: "Contact", to: "contact", icon: Hash },
+  { group: "Actions", label: "Copy email address", hint: EMAIL, copy: EMAIL, icon: Copy },
+  { group: "Actions", label: "Write an email", href: `mailto:${EMAIL}`, icon: EnvelopeSimple },
+  { group: "Actions", label: "Call", href: PHONE_HREF, icon: Phone },
+  { group: "Links", label: "GitHub", href: GITHUB_URL, external: true, icon: GithubLogo },
+  { group: "Links", label: "LinkedIn", href: LINKEDIN_URL, external: true, icon: LinkedinLogo },
   ...PROJECTS.filter((p) => p.live).map((p) => ({
     group: "Links",
     label: `${p.name} live site`,
     hint: p.domain,
     href: p.live,
     external: true,
+    icon: Globe,
   })),
 ];
 
@@ -59,7 +73,10 @@ export default function CommandPalette() {
       setCopied(false);
       d.showModal();
       window.__lenis?.stop();
-      input.current?.focus();
+      // On touch, focusing the input would raise the keyboard over the menu.
+      // Focus the dialog instead; tapping the input still opens the keyboard.
+      if (window.matchMedia("(pointer: coarse)").matches) d.focus();
+      else input.current?.focus();
     };
     const onKey = (e) => {
       const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
@@ -123,16 +140,18 @@ export default function CommandPalette() {
   }, [active]);
 
   let lastGroup = null;
+  const count = `${results.length} ${results.length === 1 ? "result" : "results"}`;
 
   return (
     <dialog
       ref={dialog}
       aria-label="Search and navigate"
+      tabIndex={-1}
       onClose={() => window.__lenis?.start()}
       onClick={(e) => {
         if (e.target === dialog.current) close();
       }}
-      className="palette mx-auto mb-auto mt-[12vh] w-[min(560px,92vw)] overflow-hidden rounded-[14px] border border-ink/[0.12] bg-surface p-0 text-ink shadow-[0_40px_100px_-30px_rgb(0_0_0/0.9)]"
+      className="palette mx-auto mb-auto mt-[12vh] w-[min(560px,92vw)] overflow-hidden rounded-[14px] border border-ink/[0.12] bg-surface p-0 text-ink shadow-[0_40px_100px_-30px_rgb(0_0_0/0.9)] outline-none"
     >
       <div className="flex items-center gap-3 border-b border-ink/10 px-4">
         <MagnifyingGlass size={17} className="shrink-0 text-muted" aria-hidden="true" />
@@ -165,7 +184,14 @@ export default function CommandPalette() {
         </button>
       </div>
 
-      <ul id="palette-list" role="listbox" aria-label="Results" className="max-h-[min(52vh,420px)] overflow-y-auto p-2">
+      {/* data-lenis-prevent: the wheel scrolls this list while page scrolling is paused */}
+      <ul
+        id="palette-list"
+        role="listbox"
+        aria-label="Results"
+        data-lenis-prevent=""
+        className="max-h-[min(52dvh,420px)] overflow-y-auto overscroll-contain p-2"
+      >
         {results.length === 0 && (
           <li role="presentation" className="px-3 py-8 text-center text-sm text-muted">
             Nothing matches &ldquo;{query}&rdquo;. Try &ldquo;work&rdquo; or &ldquo;email&rdquo;.
@@ -175,26 +201,34 @@ export default function CommandPalette() {
           const heading = item.group !== lastGroup ? item.group : null;
           lastGroup = item.group;
           const isCopied = copied && item.copy;
+          const on = i === active;
+          const Icon = item.icon;
           return (
             <li key={`${item.group}-${item.label}`} role="presentation">
               {heading && <p className="label px-3 pb-1.5 pt-3">{heading}</p>}
               <div
                 id={`palette-opt-${i}`}
                 role="option"
-                aria-selected={i === active}
-                onPointerMove={() => i !== active && setActive(i)}
+                aria-selected={on}
+                onPointerMove={() => !on && setActive(i)}
                 onClick={() => run(item)}
-                className={`flex min-h-11 cursor-pointer items-center justify-between gap-4 rounded-[9px] px-3 py-2.5 text-[15px] ${
-                  i === active ? "bg-ink/[0.08]" : ""
+                className={`relative flex min-h-11 cursor-pointer items-center justify-between gap-4 rounded-[9px] px-3 py-2.5 text-[15px] ${
+                  on ? "bg-ink/[0.08]" : ""
                 }`}
               >
-                <span className="truncate">{isCopied ? "Copied" : item.label}</span>
+                {on && (
+                  <span aria-hidden="true" className="absolute inset-y-2.5 left-0 w-[2px] rounded-full bg-accent" />
+                )}
+                <span className="flex min-w-0 items-center gap-3">
+                  <Icon size={16} aria-hidden="true" className={`shrink-0 ${on ? "text-ink" : "text-muted"}`} />
+                  <span className="truncate">{isCopied ? "Copied" : item.label}</span>
+                </span>
                 <span className="flex shrink-0 items-center gap-2 text-[13px] text-muted">
                   {item.hint && <span className="hidden max-w-[220px] truncate sm:inline">{item.hint}</span>}
                   {item.external ? (
                     <ArrowUpRight size={13} aria-hidden="true" />
                   ) : (
-                    i === active && <ArrowElbowDownLeft size={13} aria-hidden="true" />
+                    on && <ArrowElbowDownLeft size={13} aria-hidden="true" />
                   )}
                 </span>
               </div>
@@ -202,6 +236,31 @@ export default function CommandPalette() {
           );
         })}
       </ul>
+
+      {/* key hints for keyboard users; the count is announced as the list filters */}
+      <div className="hidden items-center justify-between gap-4 border-t border-ink/10 px-4 py-2.5 text-[12px] text-muted md:flex">
+        <span className="flex items-center gap-4" aria-hidden="true">
+          <span className="flex items-center gap-1.5">
+            <kbd className="kbd">↑</kbd>
+            <kbd className="kbd">↓</kbd>
+            to navigate
+          </span>
+          <span className="flex items-center gap-1.5">
+            <kbd className="kbd">↵</kbd>
+            to select
+          </span>
+          <span className="flex items-center gap-1.5">
+            <kbd className="kbd">Esc</kbd>
+            to close
+          </span>
+        </span>
+        <span className="tabular-nums" aria-hidden="true">
+          {count}
+        </span>
+      </div>
+      <p className="sr-only" aria-live="polite">
+        {query ? count : ""}
+      </p>
     </dialog>
   );
 }

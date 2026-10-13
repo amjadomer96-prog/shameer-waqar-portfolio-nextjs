@@ -6,7 +6,8 @@ import { useReduced } from "@/components/motion/useReduced";
 import { useNear } from "@/components/motion/useNear";
 
 // Muted walkthrough that plays only while on screen. Always has a pause control.
-export default function AutoVideo({ src, poster, label, className }) {
+// controlHidden keeps the button out of reach while something covers the video.
+export default function AutoVideo({ src, poster, label, className, controlHidden = false }) {
   const ref = useRef(null);
   const userPaused = useRef(false);
   const reduce = useReduced();
@@ -63,6 +64,8 @@ export default function AutoVideo({ src, poster, label, className }) {
         type="button"
         onClick={toggle}
         aria-label={playing ? `Pause ${label}` : `Play ${label}`}
+        tabIndex={controlHidden ? -1 : undefined}
+        aria-hidden={controlHidden || undefined}
         className="absolute bottom-3 left-3 grid h-11 w-11 place-items-center rounded-full bg-black/60 text-white ring-1 ring-white/25 transition-transform duration-150 ease-snap hover:scale-105 active:scale-95"
       >
         {playing ? <Pause size={16} weight="fill" aria-hidden="true" /> : <Play size={16} weight="fill" aria-hidden="true" />}

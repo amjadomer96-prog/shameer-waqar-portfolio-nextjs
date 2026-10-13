@@ -56,11 +56,11 @@ export default function PhoneScrub({ project }) {
     >
       <div ref={ref} style={{ height: `${n * 50 + 100}vh` }}>
         <div className="sticky top-0 h-[100dvh] overflow-hidden">
-          <div className="wrap grid h-full grid-rows-[auto_minmax(0,1fr)_auto] gap-4 pb-6 pt-20 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:grid-rows-1 lg:items-center lg:gap-12 lg:pb-0 lg:pt-14">
+          <div className="wrap grid h-full grid-rows-[auto_minmax(0,1fr)_auto] gap-4 pb-6 pt-20 short:grid-cols-2 short:grid-rows-[auto_minmax(0,1fr)] short:gap-x-8 short:pb-3 short:pt-16 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:grid-rows-1 lg:items-center lg:gap-12 lg:pb-0 lg:pt-14">
             {/* left: what you're looking at */}
             <div>
               <ProjectHeader project={project} />
-              <p className="mt-5 hidden max-w-[40ch] text-[16px] leading-relaxed text-muted lg:block">
+              <p className="mt-5 hidden max-w-[40ch] text-[16px] leading-relaxed text-muted [@media(min-width:1024px)_and_(min-height:740px)]:block">
                 {project.summary}
               </p>
 
@@ -83,7 +83,7 @@ export default function PhoneScrub({ project }) {
                   </li>
                 ))}
               </ol>
-              <p aria-live="polite" className="mt-6 hidden min-h-[2.8rem] max-w-[38ch] text-[15px] leading-snug lg:block">
+              <p className="mt-6 hidden min-h-[2.8rem] max-w-[38ch] text-[15px] leading-snug lg:block">
                 <motion.span
                   key={index}
                   initial={reduce ? false : { opacity: 0, y: 8 }}
@@ -97,7 +97,7 @@ export default function PhoneScrub({ project }) {
             </div>
 
             {/* centre: the app */}
-            <div className="flex min-h-0 items-center justify-center [perspective:1400px]">
+            <div className="flex min-h-0 items-center justify-center [perspective:1400px] short:col-start-2 short:row-span-2 short:row-start-1">
               <motion.div
                 style={reduce ? undefined : { rotateY: turn, y: rise }}
                 className="relative aspect-[1170/2532] h-full max-h-[640px] rounded-[2.6rem] bg-[#15171c] p-[7px] shadow-[0_60px_120px_-40px_rgb(0_0_0/0.95)] ring-1 ring-white/[0.14] lg:h-[min(74dvh,640px)]"
@@ -136,7 +136,7 @@ export default function PhoneScrub({ project }) {
             </div>
 
             {/* phones and tablets: progress and caption under the device */}
-            <div className="lg:hidden">
+            <div className="short:col-start-1 short:row-start-2 lg:hidden">
               <div className="mb-3 flex gap-1.5" aria-hidden="true">
                 {screens.map((s, i) => (
                   <span
@@ -147,7 +147,7 @@ export default function PhoneScrub({ project }) {
                   />
                 ))}
               </div>
-              <p aria-live="polite" className="min-h-[3.4rem] text-[15px] leading-snug">
+              <p className="min-h-[3.4rem] text-[15px] leading-snug">
                 <span className="font-medium">{step.label}. </span>
                 <span className="text-muted">{step.line}</span>
               </p>

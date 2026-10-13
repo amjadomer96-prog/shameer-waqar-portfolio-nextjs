@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useMotionTemplate, useScroll, useTransform } from "motion/react";
+import { motion, useMotionTemplate, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import { fieldProps } from "@/lib/field";
 import { useReduced } from "@/components/motion/useReduced";
 import AutoVideo from "./AutoVideo";
@@ -53,6 +53,13 @@ export default function IrisReveal({ project }) {
   const phoneOpacity = useTransform(p, [0.74, 0.88], [0, 1]);
   const phoneY = useTransform(p, [0.74, 0.88], [24, 0]);
 
+  // the recording is clipped and covered until the iris has opened
+  const [open, setOpen] = useState(false);
+  useMotionValueEvent(p, "change", (v) => {
+    const next = v > 0.7;
+    if (next !== open) setOpen(next);
+  });
+
   const words = LINE.split(" ");
 
   return (
@@ -81,7 +88,12 @@ export default function IrisReveal({ project }) {
                 style={reduce ? undefined : { clipPath }}
                 className="iris-clip relative overflow-hidden rounded-[14px] border border-ink/10"
               >
-                <AutoVideo src={project.video} poster={project.poster} label={`${project.name} walkthrough`} />
+                <AutoVideo
+                  src={project.video}
+                  poster={project.poster}
+                  label={`${project.name} walkthrough`}
+                  controlHidden={!reduce && !open}
+                />
                 {/* while it is still an orb, show a voice level instead of a cropped page */}
                 {!reduce && (
                   <motion.div
@@ -101,8 +113,9 @@ export default function IrisReveal({ project }) {
               {/* a landscape recording is small on a phone, so phones also get the phone capture */}
               {!reduce && (
                 <motion.div
-                  style={{ opacity: phoneOpacity, y: phoneY }}
-                  className="absolute left-[34%] top-[calc(100%+18px)] w-[32%] rounded-[1rem] bg-[#15171c] p-[3px] ring-1 ring-white/[0.14] sm:hidden"
+                  style={{ opacity: phoneOpacity, y: phoneY, x: "-50%" }}
+                  // sized from the space left under the recording, so it is never cut off
+                  className="absolute left-1/2 top-[calc(100%+18px)] w-[min(32%,calc((50dvh-28.75vw-4rem)*0.46))] rounded-[1rem] bg-[#15171c] p-[3px] ring-1 ring-white/[0.14] sm:hidden"
                 >
                   <Image
                     src={project.mobile}
@@ -134,7 +147,6 @@ export default function IrisReveal({ project }) {
 
           {/* the transcript line, under the orb */}
           <motion.p
-            aria-label={LINE}
             style={reduce ? undefined : { opacity: textOpacity }}
             className={
               reduce
@@ -142,13 +154,21 @@ export default function IrisReveal({ project }) {
                 : "wrap absolute inset-x-0 bottom-[9dvh] text-center text-[clamp(1.25rem,2.6vw,2.1rem)] font-medium leading-tight tracking-[-0.03em]"
             }
           >
-            {reduce
-              ? LINE
-              : words.map((w, i) => (
-                  <Word key={i} p={p} at={0.03 + (i / words.length) * 0.2}>
-                    <span aria-hidden="true">{w}</span>
-                  </Word>
-                ))}
+            {reduce ? (
+              LINE
+            ) : (
+              <>
+                {/* real text for screen readers; the animated words are decoration */}
+                <span className="sr-only">{LINE}</span>
+                <span aria-hidden="true">
+                  {words.map((w, i) => (
+                    <Word key={i} p={p} at={0.03 + (i / words.length) * 0.2}>
+                      {w}
+                    </Word>
+                  ))}
+                </span>
+              </>
+            )}
           </motion.p>
         </div>
       </div>
