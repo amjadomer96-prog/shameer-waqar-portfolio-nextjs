@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowElbowDownLeft,
+  ArrowRight,
   ArrowUpRight,
   Copy,
   EnvelopeSimple,
@@ -29,7 +30,15 @@ const ITEMS = [
   { group: "Go to", label: "About", to: "about", icon: Hash },
   { group: "Go to", label: "Skills", to: "skills", icon: Hash },
   { group: "Go to", label: "Experience and education", to: "path", icon: Hash },
+  { group: "Go to", label: "Questions", to: "faq", icon: Hash },
   { group: "Go to", label: "Contact", to: "contact", icon: Hash },
+  ...PROJECTS.map((p) => ({
+    group: "Case studies",
+    label: `${p.name} case study`,
+    hint: p.headline,
+    href: `/work/${p.slug}`,
+    icon: ArrowRight,
+  })),
   { group: "Actions", label: "Copy email address", hint: EMAIL, copy: EMAIL, icon: Copy },
   { group: "Actions", label: "Write an email", href: `mailto:${EMAIL}`, icon: EnvelopeSimple },
   { group: "Actions", label: "Call", href: PHONE_HREF, icon: Phone },
@@ -45,7 +54,7 @@ const ITEMS = [
   })),
 ];
 
-const GROUPS = ["Go to", "Projects", "Actions", "Links"];
+const GROUPS = ["Go to", "Projects", "Case studies", "Actions", "Links"];
 
 // Ctrl K, Cmd K or "/" from anywhere. Also the menu on small screens.
 export default function CommandPalette() {
@@ -116,7 +125,9 @@ export default function CommandPalette() {
       return;
     }
     close();
-    if (item.to) scrollToId(item.to);
+    // sections live on the home page; from a case study, go there first
+    if (item.to && document.getElementById(item.to)) scrollToId(item.to);
+    else if (item.to) window.location.href = `/#${item.to}`;
     else if (item.external) window.open(item.href, "_blank", "noopener,noreferrer");
     else if (item.href) window.location.href = item.href;
   };
@@ -176,7 +187,7 @@ export default function CommandPalette() {
         <button
           type="button"
           onClick={close}
-          aria-label="Close"
+          aria-label="Esc: close"
           className="-mr-2 grid h-11 min-w-11 shrink-0 place-items-center rounded-[9px] text-muted transition-colors duration-150 hover:text-ink"
         >
           <kbd className="kbd hidden md:inline-flex">Esc</kbd>

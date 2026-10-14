@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Page not found | Shameer Waqar",
+  title: { absolute: "Page not found | Shameer Waqar" },
+  robots: { index: false },
 };
 
 export default function NotFound() {

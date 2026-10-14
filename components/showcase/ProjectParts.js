@@ -1,4 +1,4 @@
-import { ArrowUpRight, LockSimple } from "@phosphor-icons/react/ssr";
+import { ArrowRight, ArrowUpRight, LockSimple } from "@phosphor-icons/react/ssr";
 import Reveal from "@/components/motion/Reveal";
 
 // Kind, year and name. Shared by every showcase so the projects read as a set.
@@ -27,8 +27,9 @@ export function ProjectHeader({ project, className = "", size = "lg" }) {
 }
 
 // Sits in normal flow under each pinned showcase: my role, the stack, and
-// everything the product does, grouped.
-export function ProjectDetails({ project }) {
+// everything the product does, grouped. On the home page it also links to the
+// full case study.
+export function ProjectDetails({ project, caseStudy = true }) {
   return (
     <div className="wrap relative grid gap-12 pb-28 pt-14 sm:pb-36 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.9fr)] lg:gap-16">
       <Reveal className="lg:sticky lg:top-24 lg:self-start">
@@ -42,15 +43,26 @@ export function ProjectDetails({ project }) {
             </span>
           ))}
         </div>
-        <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+        <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-3">
+          {caseStudy && (
+            <a href={`/work/${project.slug}`} className="btn btn-accent btn-sm">
+              Read the {project.name} case study
+              <ArrowRight size={14} weight="bold" aria-hidden="true" />
+            </a>
+          )}
           {project.live && (
-            <a href={project.live} target="_blank" rel="noopener noreferrer" className="btn btn-accent btn-sm">
+            <a
+              href={project.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`btn btn-sm ${caseStudy ? "btn-ghost" : "btn-accent"}`}
+            >
               Visit {project.domain}
               <ArrowUpRight size={14} weight="bold" aria-hidden="true" />
               <span className="sr-only">(opens in a new tab)</span>
             </a>
           )}
-          <span className="inline-flex items-center gap-1.5 text-[13px] text-muted">
+          <span className="inline-flex items-center gap-1.5 text-[13px] text-muted sm:ml-2">
             <LockSimple size={14} aria-hidden="true" />
             Private repository
           </span>

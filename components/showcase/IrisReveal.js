@@ -91,6 +91,7 @@ export default function IrisReveal({ project }) {
                 <AutoVideo
                   src={project.video}
                   poster={project.poster}
+                  captions={project.captions}
                   label={`${project.name} walkthrough`}
                   controlHidden={!reduce && !open}
                 />

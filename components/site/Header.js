@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { List, MagnifyingGlass } from "@phosphor-icons/react";
 import { PROJECTS } from "@/lib/projects";
@@ -21,9 +22,11 @@ const PLACES = ["top", "work", ...PROJECTS.map((p) => p.slug), "about", "skills"
 const navFor = (place) => (PROJECTS.some((p) => p.slug === place) ? "work" : place);
 
 export default function Header() {
+  // on a case study the links lead back to the home page sections
+  const home = usePathname() === "/";
   const { scrollY, scrollYProgress } = useScroll();
   const [scrolled, setScrolled] = useState(false);
-  const [place, setPlace] = useState("top");
+  const [place, setPlace] = useState(home ? "top" : "work");
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const next = y > 16;
@@ -33,6 +36,7 @@ export default function Header() {
   // Track which section is under the middle of the screen. It drives the
   // active nav item and keeps the URL shareable (#amariya, #contact, ...).
   useEffect(() => {
+    if (!home) return;
     const els = PLACES.map((id) => document.getElementById(id)).filter(Boolean);
     const inView = new Set();
     const io = new IntersectionObserver(
@@ -50,9 +54,11 @@ export default function Header() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [home]);
 
+  const href = (id) => (home ? `#${id}` : `/#${id}`);
   const go = (id) => (e) => {
+    if (!home) return;
     e.preventDefault();
     scrollToId(id);
   };
@@ -67,7 +73,7 @@ export default function Header() {
     >
       <div className="wrap flex h-14 items-center justify-between gap-2 sm:gap-4">
         <a
-          href="#top"
+          href={home ? "#top" : "/"}
           onClick={go("top")}
           className="-ml-2 flex h-11 items-center gap-2 whitespace-nowrap px-2 text-[15px] font-semibold tracking-[-0.02em]"
         >
@@ -83,7 +89,7 @@ export default function Header() {
             return (
               <a
                 key={l.id}
-                href={`#${l.id}`}
+                href={href(l.id)}
                 onClick={go(l.id)}
                 aria-current={on ? "true" : undefined}
                 className={`relative flex h-11 items-center px-3 text-sm transition-colors duration-150 ${

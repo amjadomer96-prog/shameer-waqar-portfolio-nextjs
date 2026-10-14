@@ -1,4 +1,4 @@
-# Shameer Waqar — Portfolio
+# Shameer Waqar: portfolio
 
 Built with **Next.js 16**, **React Three Fiber** (three.js), **Motion**,
 **Lenis** and **Tailwind CSS 3**.
@@ -19,7 +19,30 @@ Each project gets its own scroll choreography, accent colour and particle shape.
 | SafaLife | Screens slide sideways as you scroll, filling a points counter and a seven-day streak | `showcase/HorizontalDeck.js` | A crescent |
 
 Under each showcase, `ProjectDetails` lists the role, the stack and every
-feature group from `lib/projects.js`.
+feature group from `lib/projects.js`, and links to the project's case study.
+
+## Case studies
+
+Every project also has its own page at `/work/<slug>` (`app/work/[slug]/page.js`):
+the brief, every screen or the site recording at full size (`components/work/CaseMedia.js`),
+the result, the full feature list and a link to the next case study. The copy
+comes from the case-study fields in `lib/projects.js`. Only the four slugs are
+generated; anything else under `/work/` is a 404.
+
+## Search and sharing
+
+Everything is built from the same data the pages render (`lib/seo.js`):
+
+- A title, description, canonical URL and Open Graph and Twitter tags on every page.
+- JSON-LD: Person, WebSite, ProfilePage and FAQPage on the home page; WebPage,
+  CreativeWork and BreadcrumbList on each case study.
+- `robots.txt`, `sitemap.xml`, `manifest.webmanifest`, `favicon.ico`, an
+  Apple touch icon and `llms.txt`, a plain-text summary for AI assistants.
+- Security headers in `next.config.mjs`.
+- Link-preview images in `public/og/`, rendered from the real screens by
+  `npm run og`.
+- Captions on both walkthrough videos, describing what is on screen.
+- The hero entrance is CSS, so the headline paints before any JavaScript runs.
 
 ## The skills globe
 
@@ -50,8 +73,8 @@ touch devices) that morph between shapes as the page scrolls.
   progress, and keeps the URL in sync (`#amariya`, `#contact`), so any
   section can be linked to directly.
 
-- **Command palette**: `Ctrl K`, `Cmd K` or `/` to jump to any section or
-  project, copy the email address or open a link. Every row has an icon, the
+- **Command palette**: `Ctrl K`, `Cmd K` or `/` to jump to any section,
+  project or case study, copy the email address or open a link. Every row has an icon, the
   active row is marked, and a footer shows the keys and the result count. It
   is also the menu on small screens, where it opens without raising the
   keyboard.
@@ -78,7 +101,7 @@ Measured in a browser at phone, tablet and desktop sizes:
 ## Where to edit
 
 - `lib/projects.js` — projects: copy, stack, links, accent, media.
-- `lib/profile.js` — about text, skills, experience, education.
+- `lib/profile.js` — about text, skills, experience, education, FAQ.
 - `lib/site.js` — email, phone and social links.
 - `public/work/` — app screens and site recordings.
 
@@ -87,6 +110,18 @@ Measured in a browser at phone, tablet and desktop sizes:
 ```bash
 npm install
 npm run dev
+```
+
+## Test
+
+`tests/seo.test.mjs` checks a running build: titles, descriptions, canonicals,
+structured data, robots, sitemap, icons, llms.txt, headers, list markup and
+captions. It uses Node's built-in test runner, so there is nothing to install.
+
+```bash
+npm run build && npm start
+npm test                     # against http://localhost:3000
+SEO_BASE_URL=https://shameer-waqar-portfolio-nextjs.vercel.app npm test
 ```
 
 ## Deploy

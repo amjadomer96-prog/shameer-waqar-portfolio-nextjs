@@ -66,7 +66,12 @@ export default function BrowserFlatten({ project }) {
                   </span>
                   <span className="truncate font-mono text-[12px] text-muted">{project.domain}</span>
                 </div>
-                <AutoVideo src={project.video} poster={project.poster} label={`${project.name} walkthrough`} />
+                <AutoVideo
+                  src={project.video}
+                  poster={project.poster}
+                  captions={project.captions}
+                  label={`${project.name} walkthrough`}
+                />
               </div>
 
               {/* the same site on a phone */}

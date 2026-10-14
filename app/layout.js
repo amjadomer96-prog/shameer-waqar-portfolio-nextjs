@@ -4,6 +4,7 @@ import "./globals.css";
 import SmoothScroll from "@/components/motion/SmoothScroll";
 import { MotionProvider } from "@/components/motion/useReduced";
 import { SITE_URL } from "@/lib/site";
+import { HOME_DESCRIPTION, HOME_TITLE, NAME, social } from "@/lib/seo";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -17,28 +18,18 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const title = "Shameer Waqar | Full-stack and mobile developer";
-const description =
-  "Shameer Waqar builds web and mobile products with MERN, Flutter and React Native. Full-stack developer at Legit Design Studio, fourth-year CS student in Karachi.";
-
+// Defaults for every page. Each page sets its own canonical URL and share tags.
 export const metadata = {
   metadataBase: new URL(SITE_URL),
-  title,
-  description,
-  openGraph: {
-    title,
-    description,
-    url: SITE_URL,
-    siteName: "Shameer Waqar",
-    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Shameer Waqar portfolio" }],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title,
-    description,
-    images: ["/og.jpg"],
-  },
+  title: { default: HOME_TITLE, template: `%s | ${NAME}` },
+  description: HOME_DESCRIPTION,
+  applicationName: NAME,
+  authors: [{ name: NAME, url: SITE_URL }],
+  creator: NAME,
+  publisher: NAME,
+  category: "technology",
+  robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  ...social({ title: HOME_TITLE, description: HOME_DESCRIPTION, url: SITE_URL }),
 };
 
 export const viewport = {

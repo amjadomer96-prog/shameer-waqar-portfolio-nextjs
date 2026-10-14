@@ -64,25 +64,27 @@ export default function PhoneScrub({ project }) {
                 {project.summary}
               </p>
 
-              <ol className="relative mt-7 hidden lg:block">
+              <div className="relative mt-7 hidden lg:block">
                 <span aria-hidden="true" className="absolute bottom-0 left-0 top-0 w-px bg-ink/10" />
                 <motion.span
                   aria-hidden="true"
                   className="absolute bottom-0 left-0 top-0 w-px origin-top bg-accent"
                   style={{ scaleY: fill }}
                 />
-                {screens.map((s, i) => (
-                  <li
-                    key={s.src}
-                    aria-current={i === index ? "step" : undefined}
-                    className={`py-[5px] pl-5 text-[15px] transition-colors duration-200 ease-snap ${
-                      i === index ? "font-medium text-ink" : "text-muted"
-                    }`}
-                  >
-                    {s.label}
-                  </li>
-                ))}
-              </ol>
+                <ol>
+                  {screens.map((s, i) => (
+                    <li
+                      key={s.src}
+                      aria-current={i === index ? "step" : undefined}
+                      className={`py-[5px] pl-5 text-[15px] transition-colors duration-200 ease-snap ${
+                        i === index ? "font-medium text-ink" : "text-muted"
+                      }`}
+                    >
+                      {s.label}
+                    </li>
+                  ))}
+                </ol>
+              </div>
               <p className="mt-6 hidden min-h-[2.8rem] max-w-[38ch] text-[15px] leading-snug lg:block">
                 <motion.span
                   key={index}
@@ -117,8 +119,9 @@ export default function PhoneScrub({ project }) {
                           fill
                           sizes="(min-width: 1024px) 290px, 60vw"
                           quality={90}
-                          // clipped screens are invisible to native lazy loading
-                          loading={near ? "eager" : "lazy"}
+                          // clipped screens are invisible to native lazy loading;
+                          // the first one is the first image on the page
+                          loading={near || i === 0 ? "eager" : "lazy"}
                           fetchPriority="low"
                           className="object-cover object-top"
                         />

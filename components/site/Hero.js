@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
 import { ArrowDown } from "@phosphor-icons/react";
 import { fieldProps } from "@/lib/field";
 import { EMAIL } from "@/lib/site";
-import { LAND } from "@/components/motion/Reveal";
-import { useReduced } from "@/components/motion/useReduced";
 import { scrollToId } from "@/components/motion/SmoothScroll";
 
+// Who and where, then the line itself. Both live in the h1.
+const INTRO = "Shameer Waqar, Full Stack Developer in Karachi";
 const HEADLINE = [
   { text: "I build the app," },
   { text: "the API and" },
@@ -32,16 +31,12 @@ function LocalTime() {
   return <span className="tabular-nums">{time ? `${time} local time` : "UTC+5"}</span>;
 }
 
-export default function Hero() {
-  const reduce = useReduced();
-  let word = 0;
+// The entrance is CSS (.rise in globals.css), so the headline paints as soon
+// as the page arrives instead of waiting for JavaScript.
+const at = (delay) => ({ style: { "--d": `${delay}s` } });
 
-  const enter = (delay) => ({
-    "data-reveal": "",
-    initial: reduce ? false : { opacity: 0, y: 14, filter: "blur(6px)" },
-    animate: { opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } },
-    transition: { duration: 0.5, delay, ease: LAND },
-  });
+export default function Hero() {
+  let word = 0;
 
   return (
     <section
@@ -52,47 +47,36 @@ export default function Hero() {
     >
       <div className="wrap flex flex-1 items-end pb-10 pt-[36dvh] lg:items-center lg:pt-28">
         <div className="max-w-[46rem]" data-field-clear="">
-          <motion.p {...enter(0)} className="label">
-            Shameer Waqar
-            <span className="mx-2 text-ink/25" aria-hidden="true">
-              /
-            </span>
-            Full Stack Developer
-          </motion.p>
-
           <h1
             id="hero-title"
-            aria-label={HEADLINE.map((l) => l.text).join(" ")}
-            className="mt-6 text-[clamp(2.7rem,6.6vw,6.1rem)] font-semibold leading-[0.96] tracking-[-0.05em]"
+            aria-label={`${INTRO}. ${HEADLINE.map((l) => l.text).join(" ")}`}
+            className="text-[clamp(2.7rem,6.6vw,6.1rem)] font-semibold leading-[0.96] tracking-[-0.05em]"
           >
+            <span aria-hidden="true" {...at(0)} className="rise label mb-6 block font-normal leading-[1.5]">
+              Shameer Waqar <span className="mx-2 text-ink/25">/</span> Full Stack Developer in Karachi
+            </span>{" "}
             {HEADLINE.map((line) => (
               <span key={line.text} aria-hidden="true" className={`block ${line.accent ? "text-accent" : ""}`}>
                 {line.text.split(" ").map((w) => {
                   const i = word++;
                   return (
-                    <motion.span
-                      key={i}
-                      data-reveal=""
-                      className="inline-block whitespace-pre"
-                      initial={reduce ? false : { opacity: 0, y: 28, filter: "blur(12px)" }}
-                      animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
-                      transition={{ duration: 0.55, delay: 0.12 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                    >
+                    <span key={i} className="rise rise-word inline-block whitespace-pre" style={{ "--d": `${(0.12 + i * 0.06).toFixed(2)}s` }}>
                       {w}{" "}
-                    </motion.span>
+                    </span>
                   );
                 })}
               </span>
             ))}
           </h1>
 
-          <motion.p {...enter(0.75)} className="mt-8 max-w-[52ch] text-[17px] leading-relaxed text-muted sm:text-lg">
-            I take products from Figma to release: React Native and Flutter
-            apps, React and Node behind them, and real-time 3D in the browser
-            with Three.js.
-          </motion.p>
+          <p {...at(0.75)} className="rise mt-8 max-w-[52ch] text-[17px] leading-relaxed text-muted sm:text-lg">
+            I&apos;m a full stack and mobile developer in Karachi, Pakistan. I
+            take products from Figma to release: React Native and Flutter
+            apps, React and Node.js behind them, and real-time 3D in the
+            browser with Three.js.
+          </p>
 
-          <motion.div {...enter(0.85)} className="mt-9 flex flex-wrap items-center gap-3">
+          <div {...at(0.85)} className="rise mt-9 flex flex-wrap items-center gap-3">
             <a
               href="#work"
               onClick={(e) => {
@@ -107,12 +91,12 @@ export default function Hero() {
             <a href={`mailto:${EMAIL}`} className="btn btn-ghost">
               Say hello
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       <div className="wrap">
-      <motion.dl {...enter(1)} className="grid gap-x-10 border-t border-ink/10 sm:grid-cols-3">
+      <dl {...at(1)} className="rise grid gap-x-10 border-t border-ink/10 sm:grid-cols-3">
         {[
           ["Now", "Full Stack Developer, Legit Design Studio"],
           ["Based", null],
@@ -129,7 +113,7 @@ export default function Hero() {
             </dd>
           </div>
         ))}
-      </motion.dl>
+      </dl>
       </div>
     </section>
   );

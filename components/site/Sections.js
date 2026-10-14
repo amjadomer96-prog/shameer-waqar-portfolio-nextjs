@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "@phosphor-icons/react/ssr";
 import { fieldProps } from "@/lib/field";
-import { ALSO_SHIPPED } from "@/lib/projects";
-import { ABOUT, CAPABILITIES, EDUCATION, ROLES } from "@/lib/profile";
+import { ALSO_SHIPPED, PROJECTS } from "@/lib/projects";
+import { ABOUT, CAPABILITIES, EDUCATION, FAQ, ROLES } from "@/lib/profile";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, PHONE, PHONE_HREF, SOURCE_URL } from "@/lib/site";
 import Reveal from "@/components/motion/Reveal";
 import CopyEmail from "@/components/contact/CopyEmail";
@@ -15,8 +15,9 @@ export function WorkIntro() {
         <p className="label">Selected work</p>
         <h2 className={`mt-4 max-w-[18ch] ${H2}`}>Four products, shown the way they&apos;re used.</h2>
         <p className="mt-5 max-w-[50ch] text-[17px] leading-relaxed text-muted">
-          Keep scrolling to move through each one. Every screen and recording
-          is the real app or site.
+          Every screen and recording is the real app or site. Scroll through
+          each one here, or open its case study for the brief, the build and
+          the stack.
         </p>
       </Reveal>
     </div>
@@ -163,6 +164,34 @@ export function Path() {
   );
 }
 
+export function Faq() {
+  return (
+    <section
+      id="faq"
+      aria-labelledby="faq-title"
+      className="relative border-t border-ink/10 py-28 sm:py-36"
+      {...fieldProps({ shape: "wave", anchor: "back", alpha: 0.1 })}
+    >
+      <div className="wrap grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.6fr)] lg:gap-20">
+        <Reveal className="lg:sticky lg:top-24 lg:self-start">
+          <p className="label">Questions</p>
+          <h2 id="faq-title" className={`mt-4 max-w-[12ch] ${H2}`}>
+            Before you get in touch.
+          </h2>
+        </Reveal>
+        <div className="border-t border-ink/10">
+          {FAQ.map((item, i) => (
+            <Reveal key={item.q} delay={0.04 * i} className="border-b border-ink/10 py-7">
+              <h3 className="text-[1.2rem] font-semibold tracking-[-0.025em]">{item.q}</h3>
+              <p className="mt-3 max-w-[62ch] text-[16px] leading-relaxed text-ink/80">{item.a}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const CHANNELS = [
   { label: "Email", value: EMAIL, href: `mailto:${EMAIL}` },
   { label: "Phone", value: PHONE, href: PHONE_HREF },
@@ -226,21 +255,53 @@ export function Contact() {
   );
 }
 
+const FOOTER_LINK = "flex min-h-11 items-center transition-colors duration-150 hover:text-ink md:min-h-8";
+
 export function Footer() {
   return (
-    <footer className="relative border-t border-ink/10 py-8">
-      <div className="wrap flex flex-col gap-4 text-[14px] text-muted sm:flex-row sm:items-center sm:justify-between">
-        <p>&copy; 2026 Shameer Waqar. Designed and built in Karachi.</p>
-        <nav aria-label="Footer" className="-my-3 flex flex-wrap gap-x-6">
-          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="-mx-1 px-1 py-3 hover:text-ink">
-            GitHub
+    <footer className="relative border-t border-ink/10 py-12">
+      <div className="wrap grid gap-10 text-[14px] text-muted sm:grid-cols-2 md:grid-cols-[minmax(0,1fr)_auto_auto] md:gap-20">
+        <div className="sm:col-span-2 md:col-span-1">
+          <a href="/" className="inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold tracking-[-0.02em] text-ink md:min-h-8">
+            <span className="font-mono text-accent" aria-hidden="true">
+              +
+            </span>
+            Shameer Waqar
           </a>
-          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="-mx-1 px-1 py-3 hover:text-ink">
-            LinkedIn
-          </a>
-          <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer" className="-mx-1 px-1 py-3 hover:text-ink">
-            Site source
-          </a>
+          <p className="mt-2 max-w-[36ch] leading-relaxed">Full stack and mobile developer.</p>
+          <p className="mt-1 max-w-[36ch] leading-relaxed">&copy; 2026 Shameer Waqar. Designed and built in Karachi.</p>
+        </div>
+        <nav aria-label="Case studies">
+          <p className="label">Case studies</p>
+          <ul className="mt-3">
+            {PROJECTS.map((p) => (
+              <li key={p.slug}>
+                <a href={`/work/${p.slug}`} className={FOOTER_LINK}>
+                  {p.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <nav aria-label="Elsewhere">
+          <p className="label">Elsewhere</p>
+          <ul className="mt-3">
+            <li>
+              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className={FOOTER_LINK}>
+                GitHub
+              </a>
+            </li>
+            <li>
+              <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className={FOOTER_LINK}>
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer" className={FOOTER_LINK}>
+                Site source
+              </a>
+            </li>
+          </ul>
         </nav>
       </div>
     </footer>

@@ -6,8 +6,9 @@ import { useReduced } from "@/components/motion/useReduced";
 import { useNear } from "@/components/motion/useNear";
 
 // Muted walkthrough that plays only while on screen. Always has a pause control.
+// The captions track describes what is on screen, since there is no sound.
 // controlHidden keeps the button out of reach while something covers the video.
-export default function AutoVideo({ src, poster, label, className, controlHidden = false }) {
+export default function AutoVideo({ src, poster, captions, label, className, controlHidden = false }) {
   const ref = useRef(null);
   const userPaused = useRef(false);
   const reduce = useReduced();
@@ -59,6 +60,7 @@ export default function AutoVideo({ src, poster, label, className, controlHidden
         onPause={() => setPlaying(false)}
       >
         <source src={src} type="video/mp4" />
+        {captions && <track kind="captions" src={captions} srcLang="en" label="English" />}
       </video>
       <button
         type="button"
