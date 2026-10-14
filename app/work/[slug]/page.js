@@ -51,7 +51,7 @@ export default async function CaseStudy({ params }) {
 
   const facts = [
     ["Role", project.role],
-    ["Year", project.year],
+    ["Year", <time dateTime={project.year}>{project.year}</time>],
     ["Platform", project.platform],
   ];
 

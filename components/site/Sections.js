@@ -178,6 +178,14 @@ export function Faq() {
           <h2 id="faq-title" className={`mt-4 max-w-[12ch] ${H2}`}>
             Before you get in touch.
           </h2>
+          <p className="mt-5 max-w-[30ch] text-[16px] leading-relaxed text-muted">
+            Something I haven&apos;t covered?
+            <br />
+            Ask me directly.
+          </p>
+          <a href={`mailto:${EMAIL}`} className="btn btn-ghost mt-6">
+            Say hello
+          </a>
         </Reveal>
         <div className="border-t border-ink/10">
           {FAQ.map((item, i) => (
