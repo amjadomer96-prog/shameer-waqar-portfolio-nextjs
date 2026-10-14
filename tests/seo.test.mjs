@@ -144,6 +144,27 @@ test("home page describes Shameer as a Person, with his profiles", async () => {
   assert.ok(ofType(nodes, "ProfilePage").length, "no ProfilePage");
 });
 
+test("every organization in the structured data has an @id", async () => {
+  for (const p of PAGES) {
+    const orgs = [];
+    const walk = (v) => {
+      if (Array.isArray(v)) return v.forEach(walk);
+      if (v && typeof v === "object") {
+        if (/Organization|CollegeOrUniversity/.test([].concat(v["@type"] ?? []).join())) orgs.push(v);
+        Object.values(v).forEach(walk);
+      }
+    };
+    walk(jsonLd(await page(p.path)));
+    for (const o of orgs) assert.ok(o["@id"], `${p.path}: ${o.name} has no @id`);
+  }
+});
+
+test("the home page points AI assistants to llms.txt", async () => {
+  const doc = await page("/");
+  const hrefs = tags(doc, "link").map((t) => (attr(t, "href") ?? "").replace(SITE_URL, ""));
+  assert.ok(hrefs.includes("/llms.txt"), "no <link> to /llms.txt");
+});
+
 test("home page links to every case study", async () => {
   const doc = await page("/");
   for (const p of PROJECTS) assert.match(doc, new RegExp(`href="/work/${p.slug}"`), `no link to /work/${p.slug}`);
@@ -172,6 +193,10 @@ for (const p of PROJECTS) {
     assert.equal(items.at(-1).name, p.name);
     const work = nodes.find((n) => n.name === p.name && n.author);
     assert.ok(work, `no structured data entry for ${p.name} with an author`);
+    const [webPage] = ofType(nodes, "WebPage");
+    for (const key of ["datePublished", "dateModified"]) {
+      assert.ok(!Number.isNaN(Date.parse(webPage?.[key])), `WebPage ${key} is missing or not a date`);
+    }
   });
 
   test(`/work/${p.slug}: links home and to the next project`, async () => {

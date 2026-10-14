@@ -93,6 +93,7 @@ function Site({ project }) {
                 height={844}
                 sizes="240px"
                 quality={90}
+                loading="eager"
                 className="block h-auto w-full rounded-[1.4rem]"
               />
             </div>

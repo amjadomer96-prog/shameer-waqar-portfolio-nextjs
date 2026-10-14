@@ -16,7 +16,8 @@ import IrisReveal from "@/components/showcase/IrisReveal";
 import HorizontalDeck from "@/components/showcase/HorizontalDeck";
 
 export const metadata = {
-  alternates: { canonical: "/" },
+  // llms.txt is the same site as plain text, for AI assistants
+  alternates: { canonical: "/", types: { "text/plain": "/llms.txt" } },
   ...social({ title: HOME_TITLE, description: HOME_DESCRIPTION, url: SITE_URL }),
 };
 

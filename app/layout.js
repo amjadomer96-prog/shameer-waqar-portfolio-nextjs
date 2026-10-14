@@ -28,7 +28,7 @@ export const metadata = {
   creator: NAME,
   publisher: NAME,
   category: "technology",
-  robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  robots: { index: true, follow: true, "max-image-preview": "large" },
   ...social({ title: HOME_TITLE, description: HOME_DESCRIPTION, url: SITE_URL }),
 };
 
