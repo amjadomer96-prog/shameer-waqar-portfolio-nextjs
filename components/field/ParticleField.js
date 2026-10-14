@@ -213,6 +213,8 @@ function Cloud({ count }) {
   const stops = useRef([]);
   const current = useRef(-1);
   const pointer = useRef({ x: 0, y: 0, seen: false });
+  // where the cloud is looking (eases after the pointer) and how fast the page scrolls
+  const look = useRef({ x: 0, y: 0, lean: 0, lastY: null });
   const born = useRef(null);
   const pa = useRef({ x: 0, y: 0, s: 1, dim: 1 });
   const pb = useRef({ x: 0, y: 0, s: 1, dim: 1 });
@@ -288,7 +290,7 @@ function Cloud({ count }) {
     };
   }, []);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     const list = stops.current;
     const g = group.current;
     if (!g || list.length === 0) return;
@@ -322,8 +324,18 @@ function Cloud({ count }) {
     const s = lerp(A.s, B.s, e);
     g.position.set(lerp(A.x, B.x, e), lerp(A.y, B.y, e), 0);
     g.scale.setScalar(s);
-    g.rotation.y = Math.sin(time * 0.16) * 0.2 + pointer.current.x * 0.14;
-    g.rotation.x = -pointer.current.y * 0.09;
+    // The cloud turns toward the pointer with some weight, settles back when the
+    // pointer leaves, and leans with the scroll so a fast scroll reads as depth.
+    const dt = Math.min(0.05, delta);
+    const L = look.current;
+    const ease = 1 - Math.exp(-3.2 * dt);
+    L.x += ((pointer.current.seen ? pointer.current.x : 0) - L.x) * ease;
+    L.y += ((pointer.current.seen ? pointer.current.y : 0) - L.y) * ease;
+    const speed = L.lastY === null ? 0 : (y - L.lastY) / Math.max(dt, 0.001);
+    L.lastY = y;
+    L.lean += (Math.max(-1, Math.min(1, speed / 3500)) - L.lean) * (1 - Math.exp(-5 * dt));
+    g.rotation.y = Math.sin(time * 0.16) * 0.2 + L.x * 0.22;
+    g.rotation.x = -L.y * 0.14 + L.lean * 0.22;
 
     const intro = clamp01((time - born.current) / 1.4);
     const held = lerp(a.alpha, a.alphaEnd, hold);

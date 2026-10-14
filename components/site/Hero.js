@@ -5,6 +5,7 @@ import { ArrowDown } from "@phosphor-icons/react";
 import { fieldProps } from "@/lib/field";
 import { EMAIL } from "@/lib/site";
 import { scrollToId } from "@/components/motion/SmoothScroll";
+import Magnetic from "@/components/motion/Magnetic";
 
 // Who and where, then the line itself. Both live in the h1.
 const INTRO = "Shameer Waqar, Full Stack Developer in Karachi";
@@ -77,17 +78,19 @@ export default function Hero() {
           </p>
 
           <div {...at(0.85)} className="rise mt-9 flex flex-wrap items-center gap-3">
-            <a
-              href="#work"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToId("work");
-              }}
-              className="btn btn-primary"
-            >
-              See the work
-              <ArrowDown size={16} weight="bold" aria-hidden="true" />
-            </a>
+            <Magnetic>
+              <a
+                href="#work"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("work");
+                }}
+                className="btn btn-primary"
+              >
+                See the work
+                <ArrowDown size={16} weight="bold" aria-hidden="true" />
+              </a>
+            </Magnetic>
             <a href={`mailto:${EMAIL}`} className="btn btn-ghost">
               Say hello
             </a>

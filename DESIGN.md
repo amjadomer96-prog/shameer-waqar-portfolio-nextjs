@@ -91,8 +91,16 @@ blurred or 3D ever sits on top of them.
 - **Scroll choreography:** one per project (phone scrub, browser flatten, iris
   reveal, horizontal deck), all driven by scroll position so scrolling back
   lands on the same frame.
-- **Ambient:** the particle field breathes and morphs. The skills globe spins
-  slowly and can be dragged.
+- **Ambient:** the particle field breathes and morphs, turns toward the pointer
+  with some weight and leans with scroll speed. The skills globe spins slowly
+  and can be dragged.
+- **Pointer:** the two main calls to action (hero and contact) lean toward the
+  mouse, clamped to 10px. The work index shows a preview of the hovered
+  project above the pointer, tilting with its speed. Case-study screens swing
+  up into place in 3D and lean toward the pointer, always settling flat.
+- **Page to page:** a cross-document view transition lifts the old page away
+  and settles the new one in. The footer closes on the name set full width,
+  its letters turning up out of the baseline.
 - Entrances and scroll scenes animate only `transform`, `opacity` and
   `filter`; controls fade their colors. Video and the globe pause off screen,
   and the canvas stops when the tab is hidden.

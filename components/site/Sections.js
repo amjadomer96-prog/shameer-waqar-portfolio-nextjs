@@ -5,12 +5,16 @@ import { ABOUT, CAPABILITIES, EDUCATION, FAQ, ROLES } from "@/lib/profile";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, PHONE, PHONE_HREF, SOURCE_URL } from "@/lib/site";
 import Reveal from "@/components/motion/Reveal";
 import CopyEmail from "@/components/contact/CopyEmail";
+import Magnetic from "@/components/motion/Magnetic";
+import WorkIndex from "@/components/site/WorkIndex";
+import Wordmark from "@/components/site/Wordmark";
 
 const H2 = "text-[clamp(2rem,4.6vw,3.6rem)] font-semibold leading-[1] tracking-[-0.045em]";
 
 export function WorkIntro() {
   return (
-    <div id="work" className="wrap pb-10 pt-28 sm:pt-36">
+    // a faint backdrop here, so the cloud never sits bright behind the index
+    <div id="work" className="wrap pb-20 pt-28 sm:pb-28 sm:pt-36" {...fieldProps({ shape: "wave", anchor: "back", alpha: 0.1 })}>
       <Reveal>
         <p className="label">Selected work</p>
         <h2 className={`mt-4 max-w-[18ch] ${H2}`}>Four products, shown the way they&apos;re used.</h2>
@@ -20,6 +24,7 @@ export function WorkIntro() {
           the stack.
         </p>
       </Reveal>
+      <WorkIndex />
     </div>
   );
 }
@@ -230,9 +235,11 @@ export function Contact() {
               product work. Based in Karachi, comfortable working remote.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
-              <a href={`mailto:${EMAIL}`} className="btn btn-primary">
-                Say hello
-              </a>
+              <Magnetic>
+                <a href={`mailto:${EMAIL}`} className="btn btn-primary">
+                  Say hello
+                </a>
+              </Magnetic>
               <CopyEmail email={EMAIL} className="btn btn-ghost" />
             </div>
           </Reveal>
@@ -267,7 +274,11 @@ const FOOTER_LINK = "flex min-h-11 items-center transition-colors duration-150 h
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-ink/10 py-12">
+    // the contact cloud fades to a trace here, so it never sits behind the links
+    <footer
+      className="relative overflow-hidden border-t border-ink/10 pt-12"
+      {...fieldProps({ shape: "monogram", anchor: "right", alpha: 0.06 })}
+    >
       <div className="wrap grid gap-10 text-[14px] text-muted sm:grid-cols-2 md:grid-cols-[minmax(0,1fr)_auto_auto] md:gap-20">
         <div className="sm:col-span-2 md:col-span-1">
           <a href="/" className="inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold tracking-[-0.02em] text-ink md:min-h-8">
@@ -312,6 +323,7 @@ export function Footer() {
           </ul>
         </nav>
       </div>
+      <Wordmark />
     </footer>
   );
 }

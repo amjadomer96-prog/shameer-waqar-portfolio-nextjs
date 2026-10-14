@@ -79,6 +79,15 @@ touch devices) that morph between shapes as the page scrolls.
   is also the menu on small screens, where it opens without raising the
   keyboard.
 - **Project rail** on wide screens to jump between projects.
+- **Work index**: a numbered list of the projects linking to each case study.
+  With a mouse, a preview of the hovered project floats above the pointer and
+  tilts with its speed (`components/site/WorkIndex.js`).
+- **3D and pointer motion**: case-study screens swing up into place and lean
+  toward the pointer (`components/work/TiltFrame.js`); the two main calls to
+  action are magnetic (`components/motion/Magnetic.js`); the particle field
+  turns toward the pointer with inertia and leans with scroll speed.
+- **Page transitions** between the home page and case studies, and a
+  full-width wordmark that closes every page (`components/site/Wordmark.js`).
 - **Smooth scrolling** with Lenis on desktop, driven from Motion's frame loop.
 - **Reduced motion**: no canvas, and the showcases and skills section drop
   their scroll animation and render in normal flow (the iFund phone still
