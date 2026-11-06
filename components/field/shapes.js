@@ -206,6 +206,49 @@ function wave(n, r) {
   return rotate(out, 0.62, 0.3);
 }
 
+// Boost Drink: a soda can leaning like the site's hero can, with fizz rising off the lid.
+function can(n, r) {
+  const out = new Float32Array(n * 3);
+  const R = 0.52;
+  const H = 1.9;
+  const wall = Math.floor(n * 0.7);
+  const lid = Math.floor(n * 0.14);
+  const base = Math.floor(n * 0.08);
+  for (let i = 0; i < n; i++) {
+    const th = r() * Math.PI * 2;
+    let x, y, z;
+    if (i < wall) {
+      // straight wall, narrowing into the neck at the top
+      const t = r();
+      const neck = t > 0.9 ? 1 - (t - 0.9) * 1.4 : 1;
+      x = Math.cos(th) * R * neck;
+      z = Math.sin(th) * R * neck;
+      y = (t - 0.5) * H;
+    } else if (i < wall + lid) {
+      // lid: a rim ring plus a sparser panel
+      const rim = r() < 0.55;
+      const rad = rim ? R * 0.86 : Math.sqrt(r()) * R * 0.8;
+      x = Math.cos(th) * rad;
+      z = Math.sin(th) * rad;
+      y = H / 2 + 0.03;
+    } else if (i < wall + lid + base) {
+      x = Math.cos(th) * R * 0.92;
+      z = Math.sin(th) * R * 0.92;
+      y = -H / 2;
+    } else {
+      // fizz: a loose column of bubbles above the lid
+      const k = r();
+      x = (r() - 0.5) * 0.7 * (0.4 + k);
+      z = (r() - 0.5) * 0.4;
+      y = H / 2 + 0.12 + k * 0.55;
+    }
+    // lean the top to the left like the hero can (rotation about z)
+    const a = 0.38;
+    out.set([x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a), z], i * 3);
+  }
+  return rotate(out, 0.18, -0.25);
+}
+
 // Contact: the SW monogram, sampled from text drawn on a 2D canvas.
 function monogram(n, r) {
   const out = new Float32Array(n * 3);
@@ -253,6 +296,7 @@ export function buildShapes(n) {
     globe: globe(n, rng(59)),
     wave: wave(n, rng(67)),
     monogram: monogram(n, rng(79)),
+    can: can(n, rng(83)),
   };
 }
 

@@ -14,6 +14,7 @@ const PREVIEW = {
   ifund: { src: PROJECTS.find((p) => p.slug === "ifund").screens[3].src, shape: "aspect-[4/5]", pos: "object-top" },
   "lds-library": { src: "/work/lds-library/poster.jpg", shape: "aspect-[16/10]", pos: "object-left-top" },
   amariya: { src: "/work/amariya/poster.jpg", shape: "aspect-[16/10]", pos: "object-center" },
+  "boost-drink": { src: "/work/boost-drink/poster.jpg", shape: "aspect-[16/10]", pos: "object-center" },
   safalife: { src: "/images/shot-salah.jpg", shape: "aspect-[4/5]", pos: "object-top" },
 };
 
