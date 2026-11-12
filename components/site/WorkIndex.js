@@ -15,6 +15,7 @@ const PREVIEW = {
   "lds-library": { src: "/work/lds-library/poster.jpg", shape: "aspect-[16/10]", pos: "object-left-top" },
   amariya: { src: "/work/amariya/poster.jpg", shape: "aspect-[16/10]", pos: "object-center" },
   "boost-drink": { src: "/work/boost-drink/poster.jpg", shape: "aspect-[16/10]", pos: "object-center" },
+  revocalize: { src: "/work/revocalize/poster.jpg", shape: "aspect-[16/10]", pos: "object-center" },
   safalife: { src: "/images/shot-salah.jpg", shape: "aspect-[4/5]", pos: "object-top" },
 };
 

@@ -249,6 +249,26 @@ function can(n, r) {
   return rotate(out, 0.18, -0.25);
 }
 
+// Revocalize AI: the site's voice ribbon, a bundle of fibres that swells in the
+// middle, twists along its length and tapers to a point at both ends.
+function ribbon(n, r) {
+  const out = new Float32Array(n * 3);
+  const fibres = 28;
+  for (let i = 0; i < n; i++) {
+    const f = (i % fibres) / (fibres - 1) - 0.5;
+    const t = r() * 2 - 1;
+    const env = Math.pow(Math.sin(((t + 1) / 2) * Math.PI), 0.7);
+    const twist = t * 2.6 + 0.5;
+    const width = 0.34 * env;
+    const o = f * width + (r() - 0.5) * 0.015;
+    const x = t * 1.35;
+    const y = Math.sin(t * 3.4 + 0.6) * 0.42 * env + Math.cos(twist) * o;
+    const z = Math.sin(twist) * o;
+    out.set([x, y, z], i * 3);
+  }
+  return rotate(out, 0.12, -0.18);
+}
+
 // Contact: the SW monogram, sampled from text drawn on a 2D canvas.
 function monogram(n, r) {
   const out = new Float32Array(n * 3);
@@ -297,6 +317,7 @@ export function buildShapes(n) {
     wave: wave(n, rng(67)),
     monogram: monogram(n, rng(79)),
     can: can(n, rng(83)),
+    ribbon: ribbon(n, rng(89)),
   };
 }
 
